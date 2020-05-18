@@ -29,8 +29,9 @@ public class Main extends JavaPlugin {
         if (!manager.isPluginEnabled("ScriptBlockPlus")) {
             manager.disablePlugin(this);
         } else {
-            new PluginInstance(Main.class, this).put();
             if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), "1.9.3")) {
+                new PluginInstance(Main.class, this).put();
+                
                 SEFiles.reload();
                 manager.registerEvents(new PlayerListener(), this);
                 manager.registerEvents(new EntityListener(), this);
