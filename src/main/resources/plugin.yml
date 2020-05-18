@@ -1,0 +1,16 @@
+name: ${project.name}
+main: com.github.yuttyann.scriptentityplus.Main
+version: ${project.version}
+api-version: 1.13
+description: ${project.description}
+author: yuttyann44581
+website: https://github.com/yuttyann/ScriptEntityPlus
+softdepend: [ScriptEntity, ScriptBlock, ScriptBlockPlus, Vault]
+
+permissions:
+  scriptentityplus.*:
+    default: op
+    children:
+      scriptentityplus.tool.scriptconnection: true
+  scriptentityplus.tool.scriptconnection:
+    default: false

@@ -1,0 +1,33 @@
+# ScriptEntityPlus v${project.version} Lang #
+# Author: yuttyann44581
+# There may be some mistakes in grammar
+
+
+# &(code) : you can use color code
+
+## ===== ScriptConnection ===== ##
+# There are no placeholders
+ScriptConnection:
+- '&aThis tool supports script operations on entity.'
+- '&d---------- [ MainHand ] ----------'
+- '&6Left-click: &eSpecify the script.'
+- '&6Right-click: &eSet the script on the entity.'
+- '&6Shift+Left-click: &eSpecify the type of script.'
+- '&6Shift+Right-click: &eDelete the script for the entity.'
+- '&d---------- [ OffHand ] ----------'
+- '&6Right-click: &eDisplay the script set in the entity.'
+- '&6Shift+Right-click: &eEnables or disables the damage an entity receives.'
+
+# |~, \n : change the line
+
+## ===== Messages ===== ##
+# There are no placeholders
+InvincibleEnabledMessage: '&aDisables damage done to entities.'
+InvincibleDisabledMessage: '&aEnabled damage received by entities.'
+
+# %scripttype% : Type of script
+ScriptSelectMessage: '&aThe script "%scripttype%" was specified.'
+
+# %entitytype% : Type of entity
+ScriptSettingEntityMessage: '&aI have set a script on the entity "%entitytype%".'
+ScriptRemoveEntityMessage: '&cRemoved script for entity "%entitytype%".'

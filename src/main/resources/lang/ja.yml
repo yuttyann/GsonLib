@@ -1,0 +1,32 @@
+# ScriptEntityPlus v${project.version} Lang #
+# Author: yuttyann44581
+
+
+# &(code) : カラーコード(以降の項目全て対象)
+
+## ===== ScriptConnection ===== ##
+# プレースホルダはありません
+ScriptConnection:
+- '&aこのツールは、エンティティに対するスクリプトの操作をサポートします。'
+- '&d---------- [ メインハンド ] ----------'
+- '&6左クリック: &eスクリプトを指定します。'
+- '&6右クリック: &eエンティティにスクリプトを設定します。'
+- '&6シフト+左クリック: &eスクリプトの種類を指定します。'
+- '&6シフト+右クリック: &eエンティティのスクリプトを削除します。'
+- '&d---------- [ オフハンド ] ----------'
+- '&6右クリック: &eエンティティに設定されているスクリプトを表示します。'
+- '&6シフト+右クリック: &eエンティティのダメージ判定の有/無を切り替えます。'
+
+# |~, \n : 改行(以降の項目全て対象)
+
+## ===== Messages ===== ##
+# プレースホルダはありません
+InvincibleEnabledMessage: '&aエンティティのダメージ判定を"無効化"しました。'
+InvincibleDisabledMessage: '&aエンティティのダメージ判定を"有効化"しました。'
+
+# %scripttype% : スクリプトの種類
+ScriptSelectMessage: '&aスクリプト"%scripttype%"を指定しました。'
+
+# %entitytype% : エンティティの種類
+ScriptSettingEntityMessage: '&aエンティティ"%entitytype%"にスクリプトを設定しました。'
+ScriptRemoveEntityMessage: '&cエンティティ"%entitytype%"のスクリプトを削除しました。'
