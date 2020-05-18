@@ -31,7 +31,7 @@ public class Main extends JavaPlugin {
         } else {
             if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), "1.9.3")) {
                 new PluginInstance(Main.class, this).put();
-                
+
                 SEFiles.reload();
                 manager.registerEvents(new PlayerListener(), this);
                 manager.registerEvents(new EntityListener(), this);
