@@ -60,7 +60,7 @@ public class PlayerListener implements Listener {
         String chat = event.getMessage();
         if (chat.contains("/" + KEY_TOOL)) {
             if (Permission.TOOL_SCRIPT_CONNECTION.has(player)) {
-                String[] array = { split(chat, "/")[0] };
+                String[] array = { split(removeStart(chat, "say "), "/")[0] };
                 String type = ScriptType.valueOf(StringUtils.split(array[0], "|")[0]).type();
                 SBPlayer.fromPlayer(player).getObjectMap().put(KEY_SCRIPT, array);
                 SEConfig.SCRIPT_SELECT.replace(type).send(player);
