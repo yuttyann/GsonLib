@@ -17,6 +17,8 @@ ScriptEntityPlus [Java8 MC1.9-1.15.2]
 
 仕組み
 -----------
+ファイルのパス: `設定の保存先は` **`plugins/ScriptBlockPlus/json/scriptentity/....`** `です。`  
+
 ファイルの管理: `ScriptBlockPlusのスクリプトの種類と座標をエンティティのUUIDを元に保存しているため、`  
 `UUIDの変更(例: 額縁のアイテムを変更等)があった場合設定ファイルが残存し続けてしまうので注意してください。`  
   
