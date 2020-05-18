@@ -15,7 +15,7 @@ ScriptEntityPlus [Java8 MC1.9-1.15.2]
 プレイヤーから**コマンド**`/sbp tool`を入力し**ツール**`Script Connection`を入手してください。  
 対象の指定方法は**ブロックを対象とする場合は左クリック**、**エンティティを対象とする場合は右クリック**です。  
 
-仕組み
+ファイル関係
 -----------
 ファイルのパス: `設定の保存先は` **`plugins/ScriptBlockPlus/json/scriptentity/....`** `です。`  
 
