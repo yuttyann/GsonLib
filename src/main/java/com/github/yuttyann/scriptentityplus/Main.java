@@ -78,4 +78,8 @@ public class Main extends JavaPlugin {
     public static Main getInstance() {
         return PluginInstance.get(Main.class);
     }
+
+    public static void dispatchCommand(String command) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
 }
