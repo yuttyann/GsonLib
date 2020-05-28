@@ -12,6 +12,7 @@ import com.github.yuttyann.scriptblockplus.script.ScriptType;
 import com.github.yuttyann.scriptblockplus.utils.ItemUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
+import com.github.yuttyann.scriptentityplus.Main;
 import com.github.yuttyann.scriptentityplus.Permission;
 import com.github.yuttyann.scriptentityplus.file.SEConfig;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntity;
@@ -19,7 +20,6 @@ import com.github.yuttyann.scriptentityplus.json.ScriptEntityInfo;
 import com.github.yuttyann.scriptentityplus.json.tellraw.*;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -74,9 +74,9 @@ public class ScriptConnection extends ItemAction {
 
     private void left(ObjectMap objectMap) {
         if (isSneaking) {
+            String blockCoords = BlockCoords.getFullCoords(location);
             JsonBuilder builder = new JsonBuilder();
             builder.add(new JsonElement("ScriptTypes: ", ChatColor.WHITE));
-            String blockCoords = BlockCoords.getFullCoords(location);
             for (ScriptType scriptType : ScriptType.values()) {
                 if (ScriptBlock.getInstance().getMapManager().containsCoords(location, scriptType)) {
                     String chat = scriptType.name() + "|" + blockCoords + "/" + PlayerListener.KEY_TOOL;
@@ -91,7 +91,7 @@ public class ScriptConnection extends ItemAction {
                     builder.add(new JsonElement(", ", ChatColor.WHITE));
                 }
             }
-            Bukkit.dispatchCommand(player, "tellraw " + player.getName() + " " + builder.toJson());
+            Main.dispatchCommand("tellraw " + player.getName() + " " + builder.toJson());
         } else {
             ArrayList<String> list = new ArrayList<>();
             for (ScriptType scriptType : ScriptType.values()) {
@@ -178,7 +178,8 @@ public class ScriptConnection extends ItemAction {
                 element.setClickEvent(ClickEventType.SUGGEST_COMMAND, command);
                 element.setHoverEvent(HoverEventType.SHOW_TEXT, getTexts(scriptType, BlockCoords.fromString(array[1])));
                 builder.add(element);
-                Bukkit.dispatchCommand(player, "tellraw " + player.getName() + " " + builder.toJson());
+
+                Main.dispatchCommand("tellraw " + player.getName() + " " + builder.toJson());
             }
             player.sendMessage("---------------------");
         }
