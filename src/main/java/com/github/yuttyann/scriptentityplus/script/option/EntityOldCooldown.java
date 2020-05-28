@@ -25,7 +25,6 @@ public class EntityOldCooldown extends EntityOption {
 
     @Override
     protected boolean isValid() throws Exception {
-        System.out.println(getTimerTemp().isPresent());
         if (inCooldown()) {
             return false;
         }
