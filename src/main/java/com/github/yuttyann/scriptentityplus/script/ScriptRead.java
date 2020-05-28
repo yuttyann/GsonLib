@@ -77,10 +77,10 @@ public final class ScriptRead extends com.github.yuttyann.scriptblockplus.script
 	private String replace(String script) {
 		List<String> list = Main.getInstance().getConfig().getStringList("Replaces");
 		String result = list.stream()
-						.map(s -> StringUtils.split(s, ">>>"))
-						.filter(a -> a.length > 1 && script.contains(a[0]))
-						.map(a -> StringUtils.replace(script, a[0], a[1]))
-						.collect(Collectors.joining());
+				.map(s -> StringUtils.split(s, ">>>"))
+				.filter(a -> a.length > 1 && script.contains(a[0]))
+				.map(a -> StringUtils.replace(script, a[0], a[1]))
+				.collect(Collectors.joining());
 		return StringUtils.isEmpty(result) ? script : result;
 	}
 }
