@@ -2,18 +2,20 @@ package com.github.yuttyann.scriptentityplus.item;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
-import com.github.yuttyann.scriptblockplus.file.config.ConfigKey;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
 import com.github.yuttyann.scriptblockplus.script.ScriptData;
 import com.github.yuttyann.scriptblockplus.script.ScriptType;
-import com.github.yuttyann.scriptblockplus.utils.ItemUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.Main;
 import com.github.yuttyann.scriptentityplus.Permission;
+import com.github.yuttyann.scriptentityplus.enums.ChatFormat;
+import com.github.yuttyann.scriptentityplus.enums.ClickEventType;
+import com.github.yuttyann.scriptentityplus.enums.HoverEventType;
+import com.github.yuttyann.scriptentityplus.enums.ToolMode;
 import com.github.yuttyann.scriptentityplus.file.SEConfig;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntityInfo;
@@ -22,21 +24,18 @@ import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.StringJoiner;
 
 public class ScriptConnection extends ItemAction {
 
-    public ScriptConnection() {
-        super(get());
+    public ScriptConnection(@NotNull ToolMode toolMode) {
+        super(toolMode.getItem());
     }
 
     @NotNull
@@ -52,27 +51,29 @@ public class ScriptConnection extends ItemAction {
 
     @Override
     public boolean run() {
-        ObjectMap objectMap = SBPlayer.fromPlayer(player).getObjectMap();
         switch (action) {
-            case LEFT_CLICK_AIR:
             case RIGHT_CLICK_BLOCK:
                 break;
             case RIGHT_CLICK_AIR:
-                if (objectMap.getBoolean(EntityListener.KEY_OFF)) {
+                if (SBPlayer.fromPlayer(player).getObjectMap().getBoolean(EntityListener.KEY_OFF)) {
                     off();
                 } else {
-                    main(objectMap);
+                    main();
                 }
                 break;
             case LEFT_CLICK_BLOCK:
-                left(objectMap);
+                left();
+                break;
+            case LEFT_CLICK_AIR:
+                player.getInventory().setItemInMainHand(ToolMode.getNextItem(item));
+                Utils.updateInventory(player);
                 break;
             default:
         }
         return true;
     }
 
-    private void left(ObjectMap objectMap) {
+    private void left() {
         if (isSneaking) {
             String blockCoords = BlockCoords.getFullCoords(location);
             JsonBuilder builder = new JsonBuilder();
@@ -93,43 +94,39 @@ public class ScriptConnection extends ItemAction {
             }
             Main.dispatchCommand("tellraw " + player.getName() + " " + builder.toJson());
         } else {
-            ArrayList<String> list = new ArrayList<>();
-            for (ScriptType scriptType : ScriptType.values()) {
-                if (ScriptBlock.getInstance().getMapManager().containsCoords(location, scriptType)) {
-                    list.add(scriptType.name() + "|" + BlockCoords.getFullCoords(location));
-                }
-            }
-            if (list.size() > 0) {
-                objectMap.put(PlayerListener.KEY_SCRIPT, list.toArray(new String[0]));
-                String types = list.stream()
-                        .map(s -> ScriptType.valueOf(StringUtils.split(s, "|")[0]).type())
-                        .collect(Collectors.joining(", "));
-                SEConfig.SCRIPT_SELECT.replace(types).send(player);
-            }
+            player.getInventory().setItemInMainHand(ToolMode.getNextItem(item));
+            Utils.updateInventory(player);
         }
     }
 
-    private void main(ObjectMap objectMap) {
+    private void main() {
         Optional<Entity> entity = getEntity();
         if (!entity.isPresent()) {
             return;
         }
         if (isSneaking) {
-            entity.ifPresent(value -> new ScriptEntity(value.getUniqueId()).delete());
+            ScriptEntity scriptEntity = new ScriptEntity(entity.get().getUniqueId());
+            if (!scriptEntity.has()) {
+                SBConfig.ERROR_SCRIPT_FILE_CHECK.send(player);
+                return;
+            }
+            scriptEntity.delete();
             SEConfig.SCRIPT_REMOVE_ENTITY.replace(entity.get().getType().name()).send(player);
         } else {
+            ObjectMap objectMap = SBPlayer.fromPlayer(player).getObjectMap();
             if (!objectMap.has(PlayerListener.KEY_SCRIPT)) {
                 SBConfig.ERROR_SCRIPT_FILE_CHECK.send(player);
                 return;
             }
             ScriptEntity scriptEntity = new ScriptEntity(entity.get().getUniqueId());
             ScriptEntityInfo info = scriptEntity.getInfo();
+            ToolMode toolMode = ToolMode.getType(item);
             for (String script : objectMap.get(PlayerListener.KEY_SCRIPT, new String[0])) {
                 String[] array = StringUtils.split(script, "|");
                 Location location = BlockCoords.fromString(array[1]);
                 ScriptType scriptType = ScriptType.valueOf(array[0]);
                 if (ScriptBlock.getInstance().getMapManager().containsCoords(location, scriptType)) {
-                    info.getScripts().add(script);
+                    info.getScripts(toolMode).add(script);
                 }
             }
             info.setInvincible(true);
@@ -140,7 +137,7 @@ public class ScriptConnection extends ItemAction {
             } finally {
                 objectMap.remove(PlayerListener.KEY_SCRIPT);
             }
-            SEConfig.SCRIPT_SETTING_ENTITY.replace(entity.get().getType().name()).send(player);
+            SEConfig.SCRIPT_SETTING_ENTITY.replace(toolMode.getMode(), entity.get().getType().name()).send(player);
         }
     }
 
@@ -151,23 +148,36 @@ public class ScriptConnection extends ItemAction {
         }
         ScriptEntity scriptEntity = new ScriptEntity(entity.get().getUniqueId());
         ScriptEntityInfo info = scriptEntity.getInfo();
-        if (info.getScripts().size() < 1) {
-            SBConfig.ERROR_SCRIPT_FILE_CHECK.send(player);
-            return;
-        }
         if (isSneaking) {
-            info.setInvincible(!info.isInvincible());
-            try {
-                scriptEntity.save();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!scriptEntity.has()) {
+                SBConfig.ERROR_SCRIPT_FILE_CHECK.send(player);
+                return;
             }
-            ConfigKey<String> configKey = info.isInvincible() ? SEConfig.INVINCIBLE_ENABLED : SEConfig.INVINCIBLE_DISABLED;
-            Utils.sendColorMessage(player, configKey.getValue());
+            String uuid = entity.get().getUniqueId().toString();
+            JsonBuilder builder = new JsonBuilder();
+            JsonElement element = new JsonElement("Invincible", ChatColor.AQUA, ChatFormat.BOLD);
+            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.INVINCIBLE_TEXT.getValue(), true));
+            builder.add(element);
+            setButton(builder, "Invincible", uuid);
+            builder.add(new JsonElement("\n", ChatColor.WHITE));
+
+            element = new JsonElement("Projectile", ChatColor.AQUA, ChatFormat.BOLD);
+            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.PROJECTILE_TEXT.toString(), true));
+            builder.add(element);
+            setButton(builder, "Projectile", uuid);
+
+            player.sendMessage("--------- [ Entity Settings ] ---------");
+            Main.dispatchCommand("tellraw " + player.getName() + " " + builder.toJson());
+            player.sendMessage("-------------------------------------");
         } else {
+            ToolMode toolMode = ToolMode.getType(item);
+            if (info.getScripts(toolMode).size() < 1) {
+                SBConfig.ERROR_SCRIPT_FILE_CHECK.send(player);
+                return;
+            }
             player.sendMessage("----- [ Scripts ] -----");
             int index = 0;
-            for (String script : info.getScripts()) {
+            for (String script : info.getScripts(toolMode)) {
                 String[] array = StringUtils.split(script, "|");
                 ScriptType scriptType = ScriptType.valueOf(array[0]);
                 JsonBuilder builder = new JsonBuilder();
@@ -185,30 +195,41 @@ public class ScriptConnection extends ItemAction {
         }
     }
 
+    private void setButton(@NotNull JsonBuilder builder, @NotNull String name, @NotNull String uuid) {
+        JsonElement element = new JsonElement(" [", ChatColor.GOLD);
+        builder.add(element);
+        element = new JsonElement("Enabled", ChatColor.GREEN);
+        element.setClickEvent(ClickEventType.RUN_COMMAND, name + "=" + uuid + "=Enabled/" + PlayerListener.KEY_SETTINGS);
+        builder.add(element);
+        element = new JsonElement("]", ChatColor.GOLD);
+        builder.add(element);
+
+        element = new JsonElement("  [", ChatColor.GOLD);
+        builder.add(element);
+        element = new JsonElement("Disabled", ChatColor.RED);
+        element.setClickEvent(ClickEventType.RUN_COMMAND, name + "=" + uuid + "=Disabled/" + PlayerListener.KEY_SETTINGS);
+        builder.add(element);
+        element = new JsonElement("]", ChatColor.GOLD);
+        builder.add(element);
+
+        element = new JsonElement("  [", ChatColor.GOLD);
+        builder.add(element);
+        element = new JsonElement("View", ChatColor.LIGHT_PURPLE);
+        element.setClickEvent(ClickEventType.RUN_COMMAND, name + "=" + uuid + "=View/" + PlayerListener.KEY_SETTINGS);
+        builder.add(element);
+        element = new JsonElement("]", ChatColor.GOLD);
+        builder.add(element);
+    }
+
     @NotNull
     private String getTexts(@NotNull ScriptType scriptType, Location location) {
         ScriptData scriptData = new ScriptData(location, scriptType);
+        StringBuilder builder = new StringBuilder();
         StringJoiner joiner = new StringJoiner("\n§6- §b");
         scriptData.getScripts().forEach(joiner::add);
-        String author = "§eAuthor: §a" + String.join(", ", scriptData.getAuthors(true));
-        return author + "\n§eCoords: §d" + BlockCoords.getFullCoords(location) + "\n§eScripts:§e\n§6- §b" + joiner.toString();
-    }
-
-    public static boolean is(@NotNull ItemStack item) {
-        return ItemUtils.isItem(item, Material.BONE, s -> s.equals("§dScript Connection"));
-    }
-
-    @NotNull
-    public static ItemStack get() {
-        ItemStack item = new ItemStack(Material.BONE);
-        ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
-        meta.setDisplayName("§dScript Connection");
-        List<String> lore = new ArrayList<>(SEConfig.SCRIPT_CONNECTION.getValue());
-        for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, StringUtils.setColor(lore.get(i), true));
-        }
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        return item;
+        builder.append("§eAuthor: §a").append(String.join(", ", scriptData.getAuthors(true)));
+        builder.append("\n§eCoords: §d").append(BlockCoords.getFullCoords(location));
+        builder.append("\n§eScripts:§e\n§6- §b").append(joiner.toString());
+        return builder.toString();
     }
 }
