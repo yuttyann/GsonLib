@@ -23,6 +23,10 @@ public class ScriptEntity extends Json<ScriptEntityInfo> {
         return info;
     }
 
+    public boolean has() {
+        return getFile(uuid).exists();
+    }
+
     public void delete() {
         File file = getFile(uuid);
         if (file.exists()) {
