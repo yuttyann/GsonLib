@@ -1,5 +1,8 @@
 package com.github.yuttyann.scriptentityplus.json.tellraw;
 
+import com.github.yuttyann.scriptentityplus.enums.ChatFormat;
+import com.github.yuttyann.scriptentityplus.enums.ClickEventType;
+import com.github.yuttyann.scriptentityplus.enums.HoverEventType;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
