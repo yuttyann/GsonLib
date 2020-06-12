@@ -10,20 +10,25 @@
 ScriptConnection:
 - '&aThis tool supports script operations on entity.'
 - '&d---------- [ MainHand ] ----------'
-- '&6Left-click: &eSpecify the script.'
+- '&6Left-click: &eChange the mode of this tool.'
 - '&6Right-click: &eSet the script on the entity.'
-- '&6Shift+Left-click: &eSpecify the type of script.'
+- '&6Shift+Left-click: &eSelect the specified script.'
 - '&6Shift+Right-click: &eDelete the script for the entity.'
 - '&d---------- [ OffHand ] ----------'
 - '&6Right-click: &eDisplay the script set in the entity.'
-- '&6Shift+Right-click: &eEnables or disables the damage an entity receives.'
+- '&6Shift+Right-click: &eShows the entity settings.'
 
 # |~, \n : change the line
 
 ## ===== Messages ===== ##
 # There are no placeholders
-InvincibleEnabledMessage: '&aDisables damage done to entities.'
-InvincibleDisabledMessage: '&aEnabled damage received by entities.'
+InvincibleTextMessage: '&bSetting to disable damage to entities.'
+ProjectileTextMessage: '&bSetting to execute a script by projectile.'
+
+# %name%  : 設定の名前
+# %value% : 設定の値
+SettingValueMessage: '&aThe value of the setting "&b&l%name%&r&a" has been changed to "&e%value%&a".'
+SettingViewMessage: '&dThe value of the setting "&b&l%name%&r&d" is "&e%value%&d".'
 
 # %scripttype% : Type of script
 ScriptSelectMessage: '&aThe script "%scripttype%" was specified.'

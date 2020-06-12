@@ -9,24 +9,30 @@
 ScriptConnection:
 - '&aこのツールは、エンティティに対するスクリプトの操作をサポートします。'
 - '&d---------- [ メインハンド ] ----------'
-- '&6左クリック: &eスクリプトを指定します。'
+- '&6左クリック: &eツールのモードを変更します。'
 - '&6右クリック: &eエンティティにスクリプトを設定します。'
-- '&6シフト+左クリック: &eスクリプトの種類を指定します。'
+- '&6シフト+左クリック: &e指定したスクリプトを選択します。'
 - '&6シフト+右クリック: &eエンティティのスクリプトを削除します。'
 - '&d---------- [ オフハンド ] ----------'
 - '&6右クリック: &eエンティティに設定されているスクリプトを表示します。'
-- '&6シフト+右クリック: &eエンティティのダメージ判定の有/無を切り替えます。'
+- '&6シフト+右クリック: &eエンティティの設定を表示します。'
 
 # |~, \n : 改行(以降の項目全て対象)
 
 ## ===== Messages ===== ##
 # プレースホルダはありません
-InvincibleEnabledMessage: '&aエンティティのダメージ判定を"無効化"しました。'
-InvincibleDisabledMessage: '&aエンティティのダメージ判定を"有効化"しました。'
+InvincibleTextMessage: '&bエンティティへのダメージを無効化する設定'
+ProjectileTextMessage: '&b発射物によってスクリプトを実行する設定'
+
+# %name%  : 設定の名前
+# %value% : 設定の値
+SettingValueMessage: '&a設定"&b&l%name%&r&a"の値は"&e%value%&a"に変更されました。'
+SettingViewMessage: '&d設定"&b&l%name%&r&d"の値は"&e%value%&d"です。'
 
 # %scripttype% : スクリプトの種類
 ScriptSelectMessage: '&aスクリプト"%scripttype%"を指定しました。'
 
+# %toolmode%   : ツールのモード
 # %entitytype% : エンティティの種類
-ScriptSettingEntityMessage: '&aエンティティ"%entitytype%"にスクリプトを設定しました。'
+ScriptSettingEntityMessage: '&aエンティティ"%entitytype%"に"%toolmode%"のスクリプトを設定しました。'
 ScriptRemoveEntityMessage: '&cエンティティ"%entitytype%"のスクリプトを削除しました。'

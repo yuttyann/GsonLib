@@ -10,20 +10,25 @@
 ScriptConnection:
   - '&a该工具支持对实体的脚本操作。'
   - '&d---------- [ 主手 ] ----------'
-  - '&6左键点击: &e指定脚本。'
+  - '&6左键点击: &e更改工具模式。'
   - '&6右键点击: &e在实体上设置脚本。'
-  - '&6Shift+左键点击: &e指定脚本的类型。'
+  - '&6Shift+左键点击: &e选择指定的脚本。'
   - '&6Shift+右键点击: &e删除实体的脚本。'
   - '&d---------- [ 副手 ] ----------'
   - '&6右键点击: &e显示实体中设置的脚本。'
-  - '&6Shift+右键点击: &e启用或禁用实体受到的损害。'
+  - '&6Shift+右键点击: &e显示实体设置。'
 
 # |~ \n : 改行
 
 ## ===== Messages ===== ##
 # 沒有佔位符
-InvincibleEnabledMessage: '&a禁用对实体的伤害。'
-InvincibleDisabledMessage: '&a实体受到的已启用损害。'
+InvincibleTextMessage: '&b此设置禁用对实体的损坏。'
+ProjectileTextMessage: '&b这是通过弹丸执行脚本的设置。'
+
+# %name%  : 設定の名前
+# %value% : 設定の値
+SettingValueMessage: '&a设置"&b&l%name%&r&a"的值已更改为"&e%value%&a"。'
+SettingViewMessage: '&d此设置"&b&l%name%&r&d"的值是"&e%value%&d"。'
 
 # %scripttype% : 脚本种类
 ScriptSelectMessage: '&a指定了脚本"%scripttype%"。'
