@@ -13,14 +13,14 @@ public class SEConfig {
     // List Key
     public static final ConfigKey<List<String>> SCRIPT_CONNECTION = stringListKey("ScriptConnection", new ArrayList<>());
 
-
     // String Keys
-    public static final ConfigKey<String> INVINCIBLE_ENABLED = stringKey("InvincibleEnabledMessage", "");
-    public static final ConfigKey<String> INVINCIBLE_DISABLED = stringKey("InvincibleDisabledMessage", "");
-
+    public static final ConfigKey<String> INVINCIBLE_TEXT = stringKey("InvincibleTextMessage", "");
+    public static final ConfigKey<String> PROJECTILE_TEXT = stringKey("ProjectileTextMessage", "");
 
     // Replace Keys
+    public static final ReplaceKey SETTING_VALUE = replaceKey(stringKey("SettingValueMessage", ""), "%name%", "%value%");
+    public static final ReplaceKey SETTING_VIEW = replaceKey(stringKey("SettingViewMessage", ""), "%name%", "%value%");
     public static final ReplaceKey SCRIPT_SELECT = replaceKey(stringKey("ScriptSelectMessage", ""), "%scripttype%");
-    public static final ReplaceKey SCRIPT_SETTING_ENTITY = replaceKey(stringKey("ScriptSettingEntityMessage", ""), "%entitytype%");
+    public static final ReplaceKey SCRIPT_SETTING_ENTITY = replaceKey(stringKey("ScriptSettingEntityMessage", ""), "%toolmode%", "%entitytype%");
     public static final ReplaceKey SCRIPT_REMOVE_ENTITY = replaceKey(stringKey("ScriptRemoveEntityMessage", ""), "%entitytype%");
 }
