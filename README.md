@@ -15,10 +15,33 @@ ScriptEntityPlus [Java8 MC1.9-1.15.2]
 プレイヤーから**コマンド**`/sbp tool`を入力し**ツール**`Script Connection`を入手してください。  
 対象の指定方法は**ブロックを対象とする場合は左クリック**、**エンティティを対象とする場合は右クリック**です。  
 ――――――――――――――――――――――――――――――――――  
+**ツールのモード**  
+アップデート`v1.0.2`にて`NORMAL MODE`と`DEATH MODE`が追加されました。  
+ツールをメインハンドに所持した状態で左クリック行うことでモードを切り替えることができます。  
+  
+**`NORMAL MODE`**  
+エンティティをクリックした際に実行されるスクリプトを設定することができます。  
+  
+**`DEATH MODE`**  
+エンティティが死亡した際に実行されるスクリプトを設定することができます。 
+――――――――――――――――――――――――――――――――――  
 **チャットイベント**  
 ツールの一部の機能に特殊なチャットメッセージを送信して、  
-それにカーソルを合わせたりクリックを行うことで情報の表示やコマンドの実行ができます。(所謂[`tellraw`](https://minecraft-ja.gamepedia.com/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89/tellraw)です。)  
-基本的には`大文字の緑`の`スクリプトの種類`(**INTERACT**等)をクリックして実行することができます。    
+そのテキストにカーソルを合わせる、クリックを行うことで情報の表示やコマンドの実行ができます。  
+(所謂[`tellraw`](https://minecraft-ja.gamepedia.com/%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89/tellraw)です。)  
+  
+**`スクリプトの選択 [MAINHAND+SHIFT+LEFT_CLICK]`**  
+緑色のテキストをクリックすることで、エンティティに設定したいスクリプトを選択することができます。  
+![ScriptTypes](https://dl.dropboxusercontent.com/s/jvfmhrvyqvs1g50/ScriptTypes.png)  
+  
+**`設定されているスクリプトの表示 [OFFHAND+RIGHT_CLICK]`**  
+緑色のテキストをクリックすることで、スクリプトを実行するコマンドがチャットに設定されます。  
+![Scripts](https://dl.dropboxusercontent.com/s/tyn94f3h5x88ytz/Scripts.png)  
+  
+**`エンティティの設定 [OFFHAND+SHIFT+RIGHT_CLICK]`**  
+橙色の`[...]`で囲まれたテキストをクリックすることで、設定の`有効`、`無効`、`表示`を行うことができます。  
+また、水色のテキストにカーソルを合わせることで設定の説明が表示されます。  
+![EntitySettings](https://dl.dropboxusercontent.com/s/gpjrhmilz3yxvs0/EntitySettings.png)  
 ――――――――――――――――――――――――――――――――――  
 
 ファイル関係
