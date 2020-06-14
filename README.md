@@ -16,7 +16,7 @@ ScriptEntityPlus [Java8 MC1.9-1.15.2]
 対象の指定方法は**ブロックを対象とする場合は左クリック**、**エンティティを対象とする場合は右クリック**です。  
 ――――――――――――――――――――――――――――――――――  
 **パーミッション**  
-ツール"Script Connection"の使用: `scriptblockplus.command.tool`  
+ツール"Script Connection"の使用: `scriptentityplus.tool.scriptconnection`  
 ――――――――――――――――――――――――――――――――――  
 **ツールのモード**  
 アップデート`v1.0.2`にて`NORMAL MODE`と`DEATH MODE`が追加されました。  
