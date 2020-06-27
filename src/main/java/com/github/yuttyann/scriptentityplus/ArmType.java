@@ -1,4 +1,4 @@
-package com.github.yuttyann.scriptentityplus.enums;
+package com.github.yuttyann.scriptentityplus;
 
 import com.github.yuttyann.scriptblockplus.enums.reflection.PackageType;
 import com.github.yuttyann.scriptblockplus.utils.Utils;

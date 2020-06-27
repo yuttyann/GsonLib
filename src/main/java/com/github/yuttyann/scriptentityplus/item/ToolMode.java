@@ -1,4 +1,4 @@
-package com.github.yuttyann.scriptentityplus.enums;
+package com.github.yuttyann.scriptentityplus.item;
 
 import com.github.yuttyann.scriptblockplus.utils.ItemUtils;
 import com.github.yuttyann.scriptblockplus.utils.StreamUtils;

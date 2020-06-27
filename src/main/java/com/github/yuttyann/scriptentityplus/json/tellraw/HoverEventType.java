@@ -1,4 +1,4 @@
-package com.github.yuttyann.scriptentityplus.enums;
+package com.github.yuttyann.scriptentityplus.json.tellraw;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package com.github.yuttyann.scriptentityplus.enums;
+package com.github.yuttyann.scriptentityplus.listener;
 
 import com.github.yuttyann.scriptblockplus.enums.reflection.ClassType;
 import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
