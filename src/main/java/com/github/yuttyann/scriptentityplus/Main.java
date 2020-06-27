@@ -10,7 +10,7 @@ import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.file.SEFiles;
 import com.github.yuttyann.scriptentityplus.item.ScriptConnection;
-import com.github.yuttyann.scriptentityplus.enums.ToolMode;
+import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
 import com.github.yuttyann.scriptentityplus.script.option.EntityCooldown;

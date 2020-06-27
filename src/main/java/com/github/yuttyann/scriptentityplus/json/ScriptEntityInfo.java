@@ -1,6 +1,6 @@
 package com.github.yuttyann.scriptentityplus.json;
 
-import com.github.yuttyann.scriptentityplus.enums.ToolMode;
+import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
