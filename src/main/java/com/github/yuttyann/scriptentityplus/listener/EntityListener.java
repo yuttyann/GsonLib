@@ -12,8 +12,7 @@ import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.Main;
 import com.github.yuttyann.scriptentityplus.Permission;
-import com.github.yuttyann.scriptentityplus.enums.ArmType;
-import com.github.yuttyann.scriptentityplus.enums.ToolMode;
+import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntityInfo;
 import com.github.yuttyann.scriptentityplus.script.ScriptRead;
@@ -69,10 +68,10 @@ public class EntityListener implements Listener {
 			event.setCancelled(true);
 		}
 		if (info.isProjectile()) {
-			if (!(damager instanceof ThrowableProjectile)) {
+			if (!(damager instanceof Projectile)) {
 				return;
 			}
-			damager = (Entity) ((ThrowableProjectile) damager).getShooter();
+			damager = (Entity) ((Projectile) damager).getShooter();
 		}
 		if (damager instanceof Player) {
 			ToolMode toolMode = ToolMode.NORMAL_SCRIPT;
@@ -133,13 +132,11 @@ public class EntityListener implements Listener {
 			ItemStack main = player.getInventory().getItemInMainHand();
 			ItemStack off = player.getInventory().getItemInOffHand();
 			if (ToolMode.has(main) && Permission.TOOL_SCRIPT_CONNECTION.has(player)) {
-				ArmType.MAIN_HAND.swingAnimation(player);
 				ItemAction.run(main, player, Action.RIGHT_CLICK_AIR, entity.getLocation(), true, player.isSneaking());
 				event.setCancelled(true);
 			} else if (ToolMode.has(off) && Permission.TOOL_SCRIPT_CONNECTION.has(player)) {
 				try {
 					objectMap.put(KEY_OFF, true);
-					ArmType.OFF_HAND.swingAnimation(player);
 					ItemAction.run(off, player, Action.RIGHT_CLICK_AIR, entity.getLocation(), true, player.isSneaking());
 				} finally {
 					objectMap.put(KEY_OFF, false);
