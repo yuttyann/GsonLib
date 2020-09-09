@@ -43,7 +43,8 @@ public class Main extends JavaPlugin {
         if (!manager.isPluginEnabled("ScriptBlockPlus")) {
             manager.disablePlugin(this);
         } else {
-            if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), "1.9.3")) {
+            String version = "2.0.0";
+            if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), version)) {
                 new PluginInstance(Main.class, this).put();
 
                 SEFiles.reload();
@@ -57,6 +58,7 @@ public class Main extends JavaPlugin {
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
+                Bukkit.getConsoleSender().sendMessage("[ScriptEntityPlus] §cVersions below " + version + " are not supported.");
                 manager.disablePlugin(this);
             }
         }
