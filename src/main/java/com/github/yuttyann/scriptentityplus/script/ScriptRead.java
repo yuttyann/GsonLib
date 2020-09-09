@@ -2,6 +2,7 @@ package com.github.yuttyann.scriptentityplus.script;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
+import com.github.yuttyann.scriptblockplus.file.json.PlayerCount;
 import com.github.yuttyann.scriptblockplus.listener.ScriptListener;
 import com.github.yuttyann.scriptblockplus.manager.OptionManager;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
@@ -61,14 +62,14 @@ public final class ScriptRead extends com.github.yuttyann.scriptblockplus.script
 			}
 			String script = replace(scripts.get(scriptIndex));
 			Option option = OptionManager.get(script).newInstance();
-			optionValue = setPlaceholders(option.getValue(script), getSBPlayer());
+			optionValue = setPlaceholders(getSBPlayer(), option.getValue(script));
 			if (!hasPermission(option) || !option.callOption(this)) {
 				executeEndProcess(e -> { if (!option.isFailedIgnore()) e.failed(this); });
 				return false;
 			}
 		}
 		executeEndProcess(e -> e.success(this));
-		getSBPlayer().getPlayerCount().add(getScriptLocation(), scriptType);
+		new PlayerCount(sbPlayer.getUniqueId()).add(getScriptLocation(), scriptType);
 		SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptType, getScriptLocation()).console();
 		return true;
 	}
