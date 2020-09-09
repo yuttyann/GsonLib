@@ -3,7 +3,6 @@ package com.github.yuttyann.scriptentityplus.script.option;
 import com.github.yuttyann.scriptblockplus.file.json.PlayerTemp;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
-import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
 import com.github.yuttyann.scriptentityplus.script.EntityOption;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,9 +31,8 @@ public class EntityCooldown extends EntityOption {
         long[] params = new long[] { System.currentTimeMillis(), value, 0L };
         params[2] = params[0] + params[1];
 
-        PlayerTemp temp = getSBPlayer().getPlayerTemp();
-        String blockCoords = getScriptLocation().getFullCoords();
-        temp.getInfo().getTimerTemp().add(new TimerTemp(params, getUniqueId(), blockCoords, getScriptType()));
+        PlayerTemp temp = new PlayerTemp(getFileUniqueId());
+        temp.getInfo().getTimerTemp().add(new TimerTemp(params, getFileUniqueId(), getScriptLocation().getFullCoords(), getScriptType()));
         temp.save();
         return true;
     }
@@ -42,8 +40,7 @@ public class EntityCooldown extends EntityOption {
     @Override
     @NotNull
     protected Optional<TimerTemp> getTimerTemp() {
-        Set<TimerTemp> set = getSBPlayer().getPlayerTemp().getInfo().getTimerTemp();
-        int hash = Objects.hash(false, getUniqueId(), getScriptLocation().getFullCoords(), getScriptType());
-        return Optional.ofNullable(StreamUtils.fOrElse(set, t -> t.hashCode() == hash, null));
+        Set<TimerTemp> set = new PlayerTemp(getFileUniqueId()).getInfo().getTimerTemp();
+        return get(set, Objects.hash(false, getFileUniqueId(), getScriptLocation().getFullCoords(), getScriptType()));
     }
 }
