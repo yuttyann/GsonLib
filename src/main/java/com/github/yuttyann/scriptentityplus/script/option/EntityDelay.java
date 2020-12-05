@@ -2,7 +2,9 @@ package com.github.yuttyann.scriptentityplus.script.option;
 
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
+import com.github.yuttyann.scriptblockplus.script.ScriptType;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
+import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptentityplus.Main;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
@@ -12,11 +14,17 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.UUID;
+
 public class EntityDelay extends EntityOption implements Runnable {
+
+    private static final Delay DELAY = new Delay();
 
     private Entity entity;
     private Location location;
-    private boolean unSaveExec;
+    private boolean saveDelay;
 
     public EntityDelay() {
         super("entitydelay", "@e_delay:");
@@ -39,13 +47,13 @@ public class EntityDelay extends EntityOption implements Runnable {
             throw new UnsupportedOperationException();
         }
         String[] array = StringUtils.split(getOptionValue(), "/");
-        unSaveExec = array.length > 1 && Boolean.parseBoolean(array[1]);
+        saveDelay = array.length > 1 && Boolean.parseBoolean(array[1]);
         String blockCoords = getScriptLocation().getFullCoords();
-        if (!unSaveExec && getMapManager().containsDelay(getUniqueId(), getScriptType(), blockCoords)) {
+        if (saveDelay && containsDelay(getUniqueId(), getScriptType(), blockCoords)) {
             SBConfig.ACTIVE_DELAY.send(getSBPlayer());
         } else {
-            if (!unSaveExec) {
-                getMapManager().putDelay(getUniqueId(), getScriptType(), blockCoords);
+            if (saveDelay) {
+                putDelay(getUniqueId(), getScriptType(), blockCoords);
             }
             this.entity = getEntity();
             this.location = entity.getLocation();
@@ -56,8 +64,8 @@ public class EntityDelay extends EntityOption implements Runnable {
 
     @Override
     public void run() {
-        if (!unSaveExec) {
-            getMapManager().removeDelay(getUniqueId(), getScriptType(), getScriptLocation().getFullCoords());
+        if (saveDelay) {
+            removeDelay(getUniqueId(), getScriptType(), getScriptLocation().getFullCoords());
         }
         if (getSBPlayer().isOnline()) {
             if (entity.isDead()) {
@@ -78,5 +86,36 @@ public class EntityDelay extends EntityOption implements Runnable {
         } else {
             EndProcessManager.forEach(e -> e.failed(getSBRead()));
         }
+    }
+
+    private void putDelay(@NotNull UUID uuid, @NotNull ScriptType scriptType, @NotNull String fullCoords) {
+        try {
+            Method method = Delay.class.getDeclaredMethod("putDelay", UUID.class, ScriptType.class, String.class);
+            method.setAccessible(true);
+            method.invoke(DELAY, uuid, scriptType, fullCoords);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeDelay(@NotNull UUID uuid, @NotNull ScriptType scriptType, @NotNull String fullCoords) {
+        try {
+            Method method = Delay.class.getDeclaredMethod("removeDelay", UUID.class, ScriptType.class, String.class);
+            method.setAccessible(true);
+            method.invoke(DELAY, uuid, scriptType, fullCoords);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean containsDelay(@NotNull UUID uuid, @NotNull ScriptType scriptType, @NotNull String fullCoords) {
+        try {
+            Method method = Delay.class.getDeclaredMethod("containsDelay", UUID.class, ScriptType.class, String.class);
+            method.setAccessible(true);
+            return (boolean) method.invoke(DELAY, uuid, scriptType, fullCoords);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

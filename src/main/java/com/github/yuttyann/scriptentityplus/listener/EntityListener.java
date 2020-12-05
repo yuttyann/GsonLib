@@ -2,6 +2,7 @@ package com.github.yuttyann.scriptentityplus.listener;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
+import com.github.yuttyann.scriptblockplus.file.Files;
 import com.github.yuttyann.scriptblockplus.listener.ScriptListener;
 import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
@@ -162,7 +163,7 @@ public class EntityListener implements Listener {
 	private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String fullCoords, @NotNull String scriptType, @NotNull Action action) {
 		BlockCoords blockCoords = BlockCoords.fromString(fullCoords);
 		ScriptListener listener = new ScriptListener(ScriptBlock.getInstance(), ScriptType.valueOf(scriptType));
-		if (!ScriptBlock.getInstance().getMapManager().containsCoords(blockCoords, listener.getScriptType())) {
+		if (!Files.hasScriptCoords(blockCoords, listener.getScriptType())) {
 			return;
 		}
 		ScriptRead scriptRead = new ScriptRead(player, entity, blockCoords, listener);

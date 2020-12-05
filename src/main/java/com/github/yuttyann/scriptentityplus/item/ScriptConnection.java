@@ -1,7 +1,7 @@
 package com.github.yuttyann.scriptentityplus.item;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
-import com.github.yuttyann.scriptblockplus.ScriptBlock;
+import com.github.yuttyann.scriptblockplus.file.Files;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
@@ -12,9 +12,6 @@ import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.Main;
 import com.github.yuttyann.scriptentityplus.Permission;
-import com.github.yuttyann.scriptentityplus.json.tellraw.ChatFormat;
-import com.github.yuttyann.scriptentityplus.json.tellraw.ClickEventType;
-import com.github.yuttyann.scriptentityplus.json.tellraw.HoverEventType;
 import com.github.yuttyann.scriptentityplus.file.SEConfig;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.json.ScriptEntityInfo;
@@ -78,7 +75,7 @@ public class ScriptConnection extends ItemAction {
             JsonBuilder builder = new JsonBuilder();
             builder.add(new JsonElement("ScriptTypes: ", ChatColor.WHITE));
             for (ScriptType scriptType : ScriptType.values()) {
-                if (ScriptBlock.getInstance().getMapManager().containsCoords(location, scriptType)) {
+                if (Files.hasScriptCoords(location, scriptType)) {
                     String chat = scriptType.name() + "|" + blockCoords + "/" + PlayerListener.KEY_TOOL;
                     JsonElement element = new JsonElement(scriptType.name(), ChatColor.GREEN, ChatFormat.BOLD);
                     element.setClickEvent(ClickEventType.RUN_COMMAND, chat);
@@ -124,7 +121,7 @@ public class ScriptConnection extends ItemAction {
                 String[] array = StringUtils.split(script, "|");
                 Location location = BlockCoords.fromString(array[1]);
                 ScriptType scriptType = ScriptType.valueOf(array[0]);
-                if (ScriptBlock.getInstance().getMapManager().containsCoords(location, scriptType)) {
+                if (Files.hasScriptCoords(location, scriptType)) {
                     info.getScripts(toolMode).add(script);
                 }
             }
@@ -155,13 +152,13 @@ public class ScriptConnection extends ItemAction {
             String uuid = entity.get().getUniqueId().toString();
             JsonBuilder builder = new JsonBuilder();
             JsonElement element = new JsonElement("Invincible", ChatColor.AQUA, ChatFormat.BOLD);
-            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.INVINCIBLE_TEXT.getValue(), true));
+            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.INVINCIBLE_TEXT.getValue()));
             builder.add(element);
             setButton(builder, "Invincible", uuid);
             builder.add(new JsonElement("\n", ChatColor.WHITE));
 
             element = new JsonElement("Projectile", ChatColor.AQUA, ChatFormat.BOLD);
-            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.PROJECTILE_TEXT.toString(), true));
+            element.setHoverEvent(HoverEventType.SHOW_TEXT, StringUtils.setColor(SEConfig.PROJECTILE_TEXT.toString()));
             builder.add(element);
             setButton(builder, "Projectile", uuid);
 

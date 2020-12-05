@@ -1,6 +1,5 @@
 package com.github.yuttyann.scriptentityplus;
 
-import com.github.yuttyann.scriptblockplus.PluginInstance;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.ScriptBlockAPI;
 import com.github.yuttyann.scriptblockplus.Updater;
@@ -31,6 +30,8 @@ import java.util.Objects;
 
 public class Main extends JavaPlugin {
 
+    public static final String SBP_VERSION = "2.0.1";
+
     private Updater updater;
 
     static {
@@ -43,9 +44,7 @@ public class Main extends JavaPlugin {
         if (!manager.isPluginEnabled("ScriptBlockPlus")) {
             manager.disablePlugin(this);
         } else {
-            String version = "2.0.0";
-            if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), version)) {
-                new PluginInstance(Main.class, this).put();
+            if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), SBP_VERSION)) {
 
                 SEFiles.reload();
                 manager.registerEvents(new PlayerListener(), this);
@@ -58,7 +57,7 @@ public class Main extends JavaPlugin {
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
-                Bukkit.getConsoleSender().sendMessage("[ScriptEntityPlus] §cVersions below " + version + " are not supported.");
+                Bukkit.getConsoleSender().sendMessage("[ScriptEntityPlus] §cVersions below " + SBP_VERSION + " are not supported.");
                 manager.disablePlugin(this);
             }
         }
@@ -112,7 +111,7 @@ public class Main extends JavaPlugin {
 
     @NotNull
     public static Main getInstance() {
-        return PluginInstance.get(Main.class);
+        return Utils.getPlugin(Main.class);
     }
 
     public static void dispatchCommand(String command) {

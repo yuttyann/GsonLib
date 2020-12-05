@@ -40,7 +40,7 @@ public enum ToolMode {
         meta.setDisplayName("§dScript Connection§6[" + mode + "]");
         List<String> lore = new ArrayList<>(SEConfig.SCRIPT_CONNECTION.getValue());
         for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, StringUtils.setColor(lore.get(i), true));
+            lore.set(i, StringUtils.setColor(lore.get(i)));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);
