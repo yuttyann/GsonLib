@@ -7,7 +7,7 @@ ScriptEntityPlus [Java8 MC1.9-1.16.x]
 導入
 -----------
 [Releases](https://github.com/yuttyann/ScriptEntityPlus/releases)または[Yuttyann Files](https://file.yuttyann44581.net/)から`ScriptEntityPlus`のダウンロードを行ってください。  
-その後前提プラグインである[`ScriptBlockPlus`](https://github.com/yuttyann/ScriptBlockPlus/releases)(v1.9.3以降)をダウンロードを行い`plugins`フォルダへ保存すれば完了です。  
+その後前提プラグインである[`ScriptBlockPlus`](https://github.com/yuttyann/ScriptBlockPlus/releases)(v2.0.1以降)をダウンロードを行い`plugins`フォルダへ保存すれば完了です。  
 
 使い方
 -----------
