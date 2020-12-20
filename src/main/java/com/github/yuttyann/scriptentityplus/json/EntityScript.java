@@ -7,11 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ScriptEntityInfo {
-
-    @SerializedName("uuid")
-    @Expose
-    private final UUID uuid;
+public class EntityScript {
 
     @SerializedName("scripts")
     @Expose
@@ -28,10 +24,6 @@ public class ScriptEntityInfo {
     @SerializedName("projectile")
     @Expose
     private boolean projectile;
-
-    public ScriptEntityInfo(@NotNull UUID uuid) {
-        this.uuid = uuid;
-    }
 
     @NotNull
     public Set<String> getScripts(@NotNull ToolMode toolMode) {
@@ -56,6 +48,6 @@ public class ScriptEntityInfo {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return Objects.hash(scripts, deathscript, invincible, projectile);
     }
 }

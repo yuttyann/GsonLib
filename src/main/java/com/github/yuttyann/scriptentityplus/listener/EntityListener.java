@@ -1,9 +1,7 @@
 package com.github.yuttyann.scriptentityplus.listener;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
-import com.github.yuttyann.scriptblockplus.ScriptBlock;
-import com.github.yuttyann.scriptblockplus.file.Files;
-import com.github.yuttyann.scriptblockplus.listener.ScriptListener;
+import com.github.yuttyann.scriptblockplus.file.json.BlockScriptJson;
 import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
@@ -11,12 +9,13 @@ import com.github.yuttyann.scriptblockplus.script.ScriptType;
 import com.github.yuttyann.scriptblockplus.script.option.other.ScriptAction;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
-import com.github.yuttyann.scriptentityplus.Main;
-import com.github.yuttyann.scriptentityplus.Permission;
+import com.github.yuttyann.scriptentityplus.SEPermission;
+import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
-import com.github.yuttyann.scriptentityplus.json.ScriptEntity;
-import com.github.yuttyann.scriptentityplus.json.ScriptEntityInfo;
-import com.github.yuttyann.scriptentityplus.script.ScriptRead;
+import com.github.yuttyann.scriptentityplus.json.EntityScript;
+import com.github.yuttyann.scriptentityplus.json.EntityScriptJson;
+import com.github.yuttyann.scriptentityplus.script.EntityScriptRead;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -56,15 +55,15 @@ public class EntityListener implements Listener {
 		if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
 			return;
 		}
-		 damageEvent(event, event.getDamager(), event.getEntity(), event.getDamage());
+		damageEvent(event, event.getDamager(), event.getEntity(), event.getDamage());
 	}
 
 	private void damageEvent(@NotNull Cancellable event, @NotNull Entity damager, @NotNull Entity entity, final double damage) {
-		ScriptEntity scriptEntity = new ScriptEntity(entity.getUniqueId());
-		if (!scriptEntity.has()) {
+		EntityScriptJson entityScriptJson = new EntityScriptJson(entity.getUniqueId());
+		if (!entityScriptJson.exists()) {
 			return;
 		}
-		ScriptEntityInfo info = scriptEntity.getInfo();
+		EntityScript info = entityScriptJson.load();
 		if (info.isInvincible()) {
 			event.setCancelled(true);
 		}
@@ -90,12 +89,11 @@ public class EntityListener implements Listener {
 			}
 			try {
 				if (toolMode == ToolMode.DEATH_SCRIPT) {
-					TEMP_ENTITIES.add(entity = Main.getInstance().createArmorStand(entity.getLocation()));
+					TEMP_ENTITIES.add(entity = ScriptEntity.getInstance().createArmorStand(entity.getLocation()));
 				}
 				if (info.getScripts(toolMode).size() > 0) {
 					for (String script : info.getScripts(toolMode)) {
-						String[] array = StringUtils.split(script, "|");
-						read((Player) damager, entity, array[1], array[0], Action.LEFT_CLICK_AIR);
+						read((Player) damager, entity, StringUtils.split(script, "|"), Action.LEFT_CLICK_AIR);
 					}
 				}
 			} finally {
@@ -108,7 +106,7 @@ public class EntityListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntityType() != EntityType.PLAYER) {
-			new ScriptEntity(event.getEntity().getUniqueId()).delete();
+			new EntityScriptJson(event.getEntity().getUniqueId()).delete();
 		}
 	}
 
@@ -132,24 +130,23 @@ public class EntityListener implements Listener {
 			objectMap.put(KEY_CLICK_ENTITY, entity);
 			ItemStack main = player.getInventory().getItemInMainHand();
 			ItemStack off = player.getInventory().getItemInOffHand();
-			if (ToolMode.has(main) && Permission.TOOL_SCRIPT_CONNECTION.has(player)) {
-				ItemAction.run(main, player, Action.RIGHT_CLICK_AIR, entity.getLocation(), true, player.isSneaking());
+			if (ToolMode.isItem(main) && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
+				ItemAction.callRun(player, main, entity.getLocation(), Action.RIGHT_CLICK_AIR);
 				event.setCancelled(true);
-			} else if (ToolMode.has(off) && Permission.TOOL_SCRIPT_CONNECTION.has(player)) {
+			} else if (ToolMode.isItem(off) && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
 				try {
 					objectMap.put(KEY_OFF, true);
-					ItemAction.run(off, player, Action.RIGHT_CLICK_AIR, entity.getLocation(), true, player.isSneaking());
+					ItemAction.callRun(player, off, entity.getLocation(), Action.RIGHT_CLICK_AIR);
 				} finally {
 					objectMap.put(KEY_OFF, false);
 				}
 				event.setCancelled(true);
 			} else {
-				ScriptEntityInfo info = new ScriptEntity(entity.getUniqueId()).getInfo();
-				if (info.getScripts(ToolMode.NORMAL_SCRIPT).size() > 0) {
-					if (!info.isProjectile()) {
-						for (String script : info.getScripts(ToolMode.NORMAL_SCRIPT)) {
-							String[] array = StringUtils.split(script, "|");
-							read(player, entity, array[1], array[0], Action.RIGHT_CLICK_AIR);
+				EntityScript entityScript = new EntityScriptJson(entity.getUniqueId()).load();
+				if (entityScript.getScripts(ToolMode.NORMAL_SCRIPT).size() > 0) {
+					if (!entityScript.isProjectile()) {
+						for (String script : entityScript.getScripts(ToolMode.NORMAL_SCRIPT)) {
+							read(player, entity, StringUtils.split(script, "|"), Action.RIGHT_CLICK_AIR);
 						}
 					}
 					event.setCancelled(true);
@@ -160,15 +157,14 @@ public class EntityListener implements Listener {
 		}
 	}
 
-	private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String fullCoords, @NotNull String scriptType, @NotNull Action action) {
-		BlockCoords blockCoords = BlockCoords.fromString(fullCoords);
-		ScriptListener listener = new ScriptListener(ScriptBlock.getInstance(), ScriptType.valueOf(scriptType));
-		if (!Files.hasScriptCoords(blockCoords, listener.getScriptType())) {
+	private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
+		Location location = BlockCoords.fromString(array[1]);
+		if (!BlockScriptJson.has(location, ScriptType.valueOf(array[0]))) {
 			return;
 		}
-		ScriptRead scriptRead = new ScriptRead(player, entity, blockCoords, listener);
-		scriptRead.put(ScriptAction.KEY, action);
-		scriptRead.put(KEY_ENTITY, entity);
-		scriptRead.read(0);
+		EntityScriptRead entityScriptRead = new EntityScriptRead(player, entity, location, ScriptType.valueOf(array[0]));
+		entityScriptRead.put(ScriptAction.KEY, action);
+		entityScriptRead.put(KEY_ENTITY, entity);
+		entityScriptRead.read(0);
 	}
 }

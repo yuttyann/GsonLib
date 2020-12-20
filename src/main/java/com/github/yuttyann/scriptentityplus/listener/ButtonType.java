@@ -1,8 +1,9 @@
 package com.github.yuttyann.scriptentityplus.listener;
 
-import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 public enum ButtonType {
     ENABLED("Enabled", true),
@@ -12,7 +13,7 @@ public enum ButtonType {
     private final String type;
     private final boolean isEnabled;
 
-    private ButtonType(@NotNull String type, boolean isEnabled) {
+    ButtonType(@NotNull String type, boolean isEnabled) {
         this.type = type;
         this.isEnabled = isEnabled;
     }
@@ -34,6 +35,6 @@ public enum ButtonType {
     @Nullable
     public static ButtonType get(@NotNull String name) {
         String upper = name.toUpperCase();
-        return StreamUtils.fOrElse(values(), s -> s.name().equals(upper), null);
+        return Stream.of(values()).filter(s -> s.name().equals(upper)).findFirst().orElse(null);
     }
 }

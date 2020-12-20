@@ -3,12 +3,12 @@ package com.github.yuttyann.scriptentityplus;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 
-public enum Permission {
+public enum SEPermission {
     TOOL_SCRIPT_CONNECTION("scriptentityplus.tool.scriptconnection");
 
     private final String node;
 
-    private Permission(@NotNull String node) {
+    SEPermission(@NotNull String node) {
         this.node = node;
     }
 

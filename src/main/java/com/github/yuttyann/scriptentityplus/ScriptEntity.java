@@ -3,13 +3,16 @@ package com.github.yuttyann.scriptentityplus;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.ScriptBlockAPI;
 import com.github.yuttyann.scriptblockplus.Updater;
-import com.github.yuttyann.scriptblockplus.enums.OptionPriority;
+import com.github.yuttyann.scriptblockplus.enums.IndexType;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
-import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
+import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
+import com.github.yuttyann.scriptblockplus.script.option.OptionIndex;
+import com.github.yuttyann.scriptblockplus.script.option.time.Cooldown;
+import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
+import com.github.yuttyann.scriptblockplus.script.option.time.OldCooldown;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.file.SEFiles;
 import com.github.yuttyann.scriptentityplus.item.ScriptConnection;
-import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
 import com.github.yuttyann.scriptentityplus.script.option.EntityCooldown;
@@ -28,15 +31,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class Main extends JavaPlugin {
+public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.0.1";
+    public static final String SBP_VERSION = "2.0.2";
 
     private Updater updater;
-
-    static {
-        StreamUtils.forEach(ToolMode.values(), t -> new ScriptConnection(t).put());
-    }
 
     @Override
     public void onEnable() {
@@ -45,15 +44,15 @@ public class Main extends JavaPlugin {
             manager.disablePlugin(this);
         } else {
             if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), SBP_VERSION)) {
-
                 SEFiles.reload();
+                ItemAction.register(new ScriptConnection());
                 manager.registerEvents(new PlayerListener(), this);
                 manager.registerEvents(new EntityListener(), this);
 
                 ScriptBlockAPI api = ScriptBlock.getInstance().getAPI();
-                api.registerOption(OptionPriority.HIGHEST, EntityOldCooldown.class);
-                api.registerOption(OptionPriority.HIGHEST, EntityCooldown.class);
-                api.registerOption(OptionPriority.VERY_HIGH, EntityDelay.class);
+                api.registerOption(new OptionIndex(IndexType.BEFORE, OldCooldown.class), EntityOldCooldown.class);
+                api.registerOption(new OptionIndex(IndexType.BEFORE, Cooldown.class), EntityCooldown.class);
+                api.registerOption(new OptionIndex(IndexType.BEFORE, Delay.class), EntityDelay.class);
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
@@ -77,7 +76,7 @@ public class Main extends JavaPlugin {
             try {
                 updater.init();
                 updater.load();
-                if (!updater.execute(sender) && latestMessage) {
+                if (!updater.run(sender) && latestMessage) {
                     SBConfig.NOT_LATEST_PLUGIN.send(sender);
                 }
             } catch (Exception e) {
@@ -110,8 +109,8 @@ public class Main extends JavaPlugin {
     }
 
     @NotNull
-    public static Main getInstance() {
-        return Utils.getPlugin(Main.class);
+    public static ScriptEntity getInstance() {
+        return getPlugin(ScriptEntity.class);
     }
 
     public static void dispatchCommand(String command) {
