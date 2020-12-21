@@ -9,7 +9,6 @@ import com.github.yuttyann.scriptblockplus.script.ScriptType;
 import com.github.yuttyann.scriptblockplus.script.option.other.ScriptAction;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
-import com.github.yuttyann.scriptentityplus.SEPermission;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.github.yuttyann.scriptentityplus.json.EntityScript;
@@ -130,10 +129,10 @@ public class EntityListener implements Listener {
 			objectMap.put(KEY_CLICK_ENTITY, entity);
 			ItemStack main = player.getInventory().getItemInMainHand();
 			ItemStack off = player.getInventory().getItemInOffHand();
-			if (ToolMode.isItem(main) && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
+			if (ToolMode.isItem(main) && ItemAction.has(player, main, true)) {
 				ItemAction.callRun(player, main, entity.getLocation(), Action.RIGHT_CLICK_AIR);
 				event.setCancelled(true);
-			} else if (ToolMode.isItem(off) && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
+			} else if (ToolMode.isItem(off) && ItemAction.has(player, main, true)) {
 				try {
 					objectMap.put(KEY_OFF, true);
 					ItemAction.callRun(player, off, entity.getLocation(), Action.RIGHT_CLICK_AIR);

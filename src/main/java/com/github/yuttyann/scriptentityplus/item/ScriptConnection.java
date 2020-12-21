@@ -46,17 +46,13 @@ public class ScriptConnection extends ItemAction {
 
     @Override
     public void slot(@NotNull ChangeSlot changeSlot) {
-        try {
-            SBPlayer sbPlayer = SBPlayer.fromPlayer(changeSlot.getPlayer());
-            ToolMode toolMode = sbPlayer.getObjectMap().get(KEY, ToolMode.NORMAL_SCRIPT);
-            ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
+        SBPlayer sbPlayer = SBPlayer.fromPlayer(changeSlot.getPlayer());
+        ToolMode toolMode = sbPlayer.getObjectMap().get(KEY, ToolMode.NORMAL_SCRIPT);
+        ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
     }
 
     @Override
-    public boolean run(@NotNull RunItem runItem) {
+    public void run(@NotNull RunItem runItem) {
         SBPlayer sbPlayer = SBPlayer.fromPlayer(runItem.getPlayer());
         ToolMode toolMode = sbPlayer.getObjectMap().get(KEY, ToolMode.NORMAL_SCRIPT);
         switch (runItem.getAction()) {
@@ -73,16 +69,11 @@ public class ScriptConnection extends ItemAction {
                 left(runItem, sbPlayer, toolMode);
                 break;
             case LEFT_CLICK_AIR:
-                try {
-                    sbPlayer.getObjectMap().put(KEY, toolMode = ToolMode.getNextMode(toolMode));
-                    ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
-                } catch (ReflectiveOperationException e) {
-                    e.printStackTrace();
-                }
+                sbPlayer.getObjectMap().put(KEY, toolMode = ToolMode.getNextMode(toolMode));
+                ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
                 break;
             default:
         }
-        return true;
     }
 
     @NotNull
@@ -113,12 +104,8 @@ public class ScriptConnection extends ItemAction {
             }
             ScriptEntity.dispatchCommand("tellraw " + sbPlayer.getName() + " " + builder.toJson());
         } else {
-            try {
-                sbPlayer.getObjectMap().put(KEY, toolMode = ToolMode.getNextMode(toolMode));
-                ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
-            } catch (ReflectiveOperationException e) {
-                e.printStackTrace();
-            }
+            sbPlayer.getObjectMap().put(KEY, toolMode = ToolMode.getNextMode(toolMode));
+            ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
         }
     }
 

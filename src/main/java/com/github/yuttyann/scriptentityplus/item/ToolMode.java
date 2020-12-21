@@ -4,6 +4,7 @@ import com.github.yuttyann.scriptblockplus.utils.ItemUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptentityplus.file.SEConfig;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,7 @@ public enum ToolMode {
         ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
         meta.setDisplayName("§dScript Connection");
         meta.setLore(StringUtils.setListColor(SEConfig.SCRIPT_CONNECTION.getValue()));
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
         return item;
     }
