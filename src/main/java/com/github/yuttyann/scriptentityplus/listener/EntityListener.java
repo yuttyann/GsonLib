@@ -132,7 +132,7 @@ public class EntityListener implements Listener {
 			if (ToolMode.isItem(main) && ItemAction.has(player, main, true)) {
 				ItemAction.callRun(player, main, entity.getLocation(), Action.RIGHT_CLICK_AIR);
 				event.setCancelled(true);
-			} else if (ToolMode.isItem(off) && ItemAction.has(player, main, true)) {
+			} else if (ToolMode.isItem(off) && ItemAction.has(player, off, true)) {
 				try {
 					objectMap.put(KEY_OFF, true);
 					ItemAction.callRun(player, off, entity.getLocation(), Action.RIGHT_CLICK_AIR);
