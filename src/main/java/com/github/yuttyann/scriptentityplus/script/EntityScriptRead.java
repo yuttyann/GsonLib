@@ -22,63 +22,63 @@ import java.util.stream.Collectors;
 
 public final class EntityScriptRead extends ScriptRead {
 
-	private final Location scriptLocation;
+    private final Location scriptLocation;
 
-	public EntityScriptRead(@NotNull Player player, @NotNull Entity entity, @NotNull Location location, @NotNull ScriptType scriptType) {
-		super(player, entity.getLocation(), scriptType);
-		this.scriptLocation = new UnmodifiableLocation(location);
-	}
+    public EntityScriptRead(@NotNull Player player, @NotNull Entity entity, @NotNull Location location, @NotNull ScriptType scriptType) {
+        super(player, entity.getLocation(), scriptType);
+        this.scriptLocation = new UnmodifiableLocation(location);
+    }
 
-	@NotNull
-	public final Entity getEntity() {
-		return (Entity) Objects.requireNonNull(get(EntityListener.KEY_ENTITY));
-	}
+    @NotNull
+    public final Entity getEntity() {
+        return (Entity) Objects.requireNonNull(get(EntityListener.KEY_ENTITY));
+    }
 
-	@NotNull
-	public final Location getScriptLocation() {
-		return scriptLocation;
-	}
+    @NotNull
+    public final Location getScriptLocation() {
+        return scriptLocation;
+    }
 
-	@Override
-	public boolean read(int index) {
-		if (!blockScript.has(scriptLocation)) {
-			SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
-			return false;
-		}
-		if (!sort(blockScript.get(scriptLocation).getScript())) {
-			SBConfig.ERROR_SCRIPT_EXECUTE.replace(scriptType).send(sbPlayer);
-			SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
-			return false;
-		}
-		for (scriptIndex = index; scriptIndex < script.size(); scriptIndex++) {
-			if (!sbPlayer.isOnline()) {
-				executeEndProcess(e -> e.failed(this));
-				return false;
-			}
-			String script = replace(this.script.get(scriptIndex));
-			Option option = OptionManager.newInstance(script);
-			optionValue = setPlaceholders(getSBPlayer(), option.getValue(script));
-			if (!hasPermission(option) || !option.callOption(this)) {
-				if (!option.isFailedIgnore()) {
-					executeEndProcess(e -> e.failed(this));
-				}
-				return false;
-			}
-		}
-		executeEndProcess(e -> e.success(this));
-		new PlayerCountJson(sbPlayer.getUniqueId()).action(PlayerCount::add, scriptLocation, scriptType);
-		SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
-		return true;
-	}
+    @Override
+    public boolean read(int index) {
+        if (!blockScript.has(scriptLocation)) {
+            SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
+            return false;
+        }
+        if (!sort(blockScript.get(scriptLocation).getScript())) {
+            SBConfig.ERROR_SCRIPT_EXECUTE.replace(scriptType).send(sbPlayer);
+            SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
+            return false;
+        }
+        for (scriptIndex = index; scriptIndex < script.size(); scriptIndex++) {
+            if (!sbPlayer.isOnline()) {
+                executeEndProcess(e -> e.failed(this));
+                return false;
+            }
+            String script = replace(this.script.get(scriptIndex));
+            Option option = OptionManager.newInstance(script);
+            optionValue = setPlaceholders(getSBPlayer(), option.getValue(script));
+            if (!hasPermission(option) || !option.callOption(this)) {
+                if (!option.isFailedIgnore()) {
+                    executeEndProcess(e -> e.failed(this));
+                }
+                return false;
+            }
+        }
+        executeEndProcess(e -> e.success(this));
+        new PlayerCountJson(sbPlayer.getUniqueId()).action(PlayerCount::add, scriptLocation, scriptType);
+        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
+        return true;
+    }
 
-	@NotNull
-	private String replace(String script) {
-		List<String> list = ScriptEntity.getInstance().getConfig().getStringList("Replaces");
-		String result = list.stream()
-				.map(s -> StringUtils.split(s, ">>>"))
-				.filter(a -> a.length > 1 && script.contains(a[0]))
-				.map(a -> StringUtils.replace(script, a[0], a[1]))
-				.collect(Collectors.joining());
-		return StringUtils.isEmpty(result) ? script : result;
-	}
+    @NotNull
+    private String replace(String script) {
+        List<String> list = ScriptEntity.getInstance().getConfig().getStringList("Replaces");
+        String result = list.stream()
+                .map(s -> StringUtils.split(s, ">>>"))
+                .filter(a -> a.length > 1 && script.contains(a[0]))
+                .map(a -> StringUtils.replace(script, a[0], a[1]))
+                .collect(Collectors.joining());
+        return StringUtils.isEmpty(result) ? script : result;
+    }
 }

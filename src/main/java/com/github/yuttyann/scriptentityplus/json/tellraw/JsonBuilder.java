@@ -3,6 +3,7 @@ package com.github.yuttyann.scriptentityplus.json.tellraw;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 
+@SuppressWarnings("unchecked")
 public class JsonBuilder {
 
     private final JSONArray jsonArray = new JSONArray();
