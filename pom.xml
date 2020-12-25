@@ -3,7 +3,7 @@
     <groupId>com.github.yuttyann</groupId>
     <name>ScriptEntityPlus</name>
     <artifactId>ScriptEntityPlus</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <licenses>
         <license>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.github.yuttyann</groupId>
             <artifactId>ScriptBlockPlus</artifactId>
-            <version>v2.0.2</version>
+            <version>v2.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

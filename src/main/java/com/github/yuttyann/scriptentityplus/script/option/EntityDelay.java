@@ -39,6 +39,7 @@ public class EntityDelay extends EntityOption implements Runnable {
             if (saveDelay) {
                 Delay.DELAY_SET.add(newTimerTemp());
             }
+            ((SBRead) getTempMap()).setInitialize(false);
             Bukkit.getScheduler().runTaskLater(ScriptBlock.getInstance(), this, Long.parseLong(array[0]));
         }
         return false;
@@ -51,9 +52,10 @@ public class EntityDelay extends EntityOption implements Runnable {
         }
         SBRead sbRead = (SBRead) getTempMap();
         if (getSBPlayer().isOnline()) {
+            sbRead.setInitialize(true);
             sbRead.read(getScriptIndex() + 1);
         } else {
-            EndProcessManager.forEach(e -> e.failed(sbRead));
+            EndProcessManager.forEachFinally(e -> e.failed(sbRead), () -> sbRead.clear());
         }
     }
 

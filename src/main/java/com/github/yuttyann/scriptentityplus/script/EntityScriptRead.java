@@ -1,19 +1,28 @@
 package com.github.yuttyann.scriptentityplus.script;
 
+import com.github.yuttyann.scriptblockplus.event.ScriptReadEndEvent;
+import com.github.yuttyann.scriptblockplus.event.ScriptReadStartEvent;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.file.json.PlayerCountJson;
 import com.github.yuttyann.scriptblockplus.file.json.element.PlayerCount;
+import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
 import com.github.yuttyann.scriptblockplus.manager.OptionManager;
+import com.github.yuttyann.scriptblockplus.script.SBRead;
+import com.github.yuttyann.scriptblockplus.script.ScriptMap;
 import com.github.yuttyann.scriptblockplus.script.ScriptRead;
 import com.github.yuttyann.scriptblockplus.script.ScriptType;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
+import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.unmodifiable.UnmodifiableLocation;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -50,9 +59,21 @@ public final class EntityScriptRead extends ScriptRead {
             SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
             return false;
         }
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.callEvent(new ScriptReadStartEvent(ramdomId, this));
+        try {
+            return perform(index);
+        } finally {
+            pluginManager.callEvent(new ScriptReadEndEvent(ramdomId, this));
+            StreamUtils.filter(this, SBRead::isInitialize, ScriptMap::clear);
+        }
+    }
+
+    @Override
+    protected boolean perform(int index) {
         for (scriptIndex = index; scriptIndex < script.size(); scriptIndex++) {
             if (!sbPlayer.isOnline()) {
-                executeEndProcess(e -> e.failed(this));
+                EndProcessManager.forEach(e -> e.failed(this));
                 return false;
             }
             String script = replace(this.script.get(scriptIndex));
@@ -60,12 +81,12 @@ public final class EntityScriptRead extends ScriptRead {
             optionValue = setPlaceholders(getSBPlayer(), option.getValue(script));
             if (!hasPermission(option) || !option.callOption(this)) {
                 if (!option.isFailedIgnore()) {
-                    executeEndProcess(e -> e.failed(this));
+                    EndProcessManager.forEach(e -> e.failed(this));
                 }
                 return false;
             }
         }
-        executeEndProcess(e -> e.success(this));
+        EndProcessManager.forEach(e -> e.success(this));
         new PlayerCountJson(sbPlayer.getUniqueId()).action(PlayerCount::add, scriptLocation, scriptType);
         SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptType).console();
         return true;
