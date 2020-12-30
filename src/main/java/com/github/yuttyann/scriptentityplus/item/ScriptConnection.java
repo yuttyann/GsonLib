@@ -120,7 +120,7 @@ public class ScriptConnection extends ItemAction {
                 SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
                 return;
             }
-            entityScriptJson.delete();
+            entityScriptJson.deleteFile();
             SEConfig.SCRIPT_REMOVE_ENTITY.replace(entity.get().getType().name()).send(sbPlayer);
         } else {
             ObjectMap objectMap = sbPlayer.getObjectMap();

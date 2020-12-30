@@ -105,7 +105,7 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) {
-            new EntityScriptJson(event.getEntity().getUniqueId()).delete();
+            new EntityScriptJson(event.getEntity().getUniqueId()).deleteFile();
         }
     }
 

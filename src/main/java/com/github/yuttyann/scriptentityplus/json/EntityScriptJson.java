@@ -13,10 +13,6 @@ public class EntityScriptJson extends Json<EntityScript> {
         super(uuid);
     }
 
-    public void delete() {
-        file.delete();
-    }
-
     @Override
     @NotNull
     protected EntityScript newInstance(@NotNull Object[] object) {
