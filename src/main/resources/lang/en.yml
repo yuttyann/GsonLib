@@ -25,8 +25,8 @@ ScriptConnection:
 InvincibleTextMessage: '&bSetting to disable damage to entities.'
 ProjectileTextMessage: '&bSetting to execute a script by projectile.'
 
-# %name%  : 設定の名前
-# %value% : 設定の値
+# %name%  : Setting name
+# %value% : Setting value
 SettingValueMessage: '&aThe value of the setting "&b&l%name%&r&a" has been changed to "&e%value%&a".'
 SettingViewMessage: '&dThe value of the setting "&b&l%name%&r&d" is "&e%value%&d".'
 
