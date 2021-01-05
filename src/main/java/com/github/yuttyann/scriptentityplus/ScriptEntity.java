@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.0.4";
+    public static final String SBP_VERSION = "2.0.5";
 
     private Updater updater;
 

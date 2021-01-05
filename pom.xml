@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.github.yuttyann</groupId>
             <artifactId>ScriptBlockPlus</artifactId>
-            <version>-84feb2520d-1</version>
+            <version>v2.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
