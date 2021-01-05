@@ -35,7 +35,7 @@ public class EntityOldCooldown extends EntityOption {
         params[2] = params[0] + params[1];
 
         Json<PlayerTemp> json = new PlayerTempJson(getFileUniqueId());
-        TimerTemp timerTemp = new TimerTemp(getScriptLocation(), getScriptType());
+        TimerTemp timerTemp = new TimerTemp(getScriptLocation(), getScriptKey());
         Method timerTempSet = TimerTemp.class.getDeclaredMethod("set", long[].class);
         timerTempSet.setAccessible(true);
         timerTempSet.invoke(timerTemp, new Object[] { params });
@@ -54,6 +54,6 @@ public class EntityOldCooldown extends EntityOption {
     @NotNull
     protected Optional<TimerTemp> getTimerTemp() {
         Set<TimerTemp> timers = new PlayerTempJson(getFileUniqueId()).load().getTimerTemp();
-        return get(timers, new TimerTemp(getScriptLocation(), getScriptType()));
+        return get(timers, new TimerTemp(getScriptLocation(), getScriptKey()));
     }
 }

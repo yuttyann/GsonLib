@@ -3,12 +3,11 @@ package com.github.yuttyann.scriptentityplus.script.option;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
-import com.github.yuttyann.scriptblockplus.script.SBRead;
+import com.github.yuttyann.scriptblockplus.script.ScriptRead;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.script.option.OptionTag;
 import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
-import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptentityplus.script.EntityOption;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,7 @@ public class EntityDelay extends EntityOption implements Runnable {
 
     @Override
     protected boolean isValid() throws Exception {
-        String[] array = StringUtils.split(getOptionValue(), "/");
+        String[] array = getOptionValue().split("/");
         saveDelay = array.length <= 1 || Boolean.parseBoolean(array[1]);
         if (saveDelay && Delay.DELAY_SET.contains(newTimerTemp())) {
             SBConfig.ACTIVE_DELAY.send(getSBPlayer());
@@ -39,7 +38,7 @@ public class EntityDelay extends EntityOption implements Runnable {
             if (saveDelay) {
                 Delay.DELAY_SET.add(newTimerTemp());
             }
-            ((SBRead) getTempMap()).setInitialize(false);
+            ((ScriptRead) getTempMap()).setInitialize(false);
             Bukkit.getScheduler().runTaskLater(ScriptBlock.getInstance(), this, Long.parseLong(array[0]));
         }
         return false;
@@ -50,16 +49,16 @@ public class EntityDelay extends EntityOption implements Runnable {
         if (saveDelay) {
             Delay.DELAY_SET.remove(newTimerTemp());
         }
-        SBRead sbRead = (SBRead) getTempMap();
+        ScriptRead scriptRead = (ScriptRead) getTempMap();
         if (getSBPlayer().isOnline()) {
-            sbRead.setInitialize(true);
-            sbRead.read(getScriptIndex() + 1);
+            scriptRead.setInitialize(true);
+            scriptRead.read(getScriptIndex() + 1);
         } else {
-            EndProcessManager.forEachFinally(e -> e.failed(sbRead), () -> sbRead.clear());
+            EndProcessManager.forEachFinally(e -> e.failed(scriptRead), () -> scriptRead.clear());
         }
     }
 
     private TimerTemp newTimerTemp() {
-        return new TimerTemp(getUniqueId(), getScriptLocation(), getScriptType());
+        return new TimerTemp(getUniqueId(), getScriptLocation(), getScriptKey());
     }
 }

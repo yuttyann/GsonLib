@@ -1,7 +1,6 @@
 package com.github.yuttyann.scriptentityplus.json;
 
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,25 +8,21 @@ import java.util.*;
 
 public class EntityScript {
 
-    @SerializedName("scripts")
-    @Expose
-    private final Set<String> scripts = new LinkedHashSet<>();
+    @SerializedName(value = "normalscripts", alternate = { "scripts" })
+    private final Set<String> normalscripts = new LinkedHashSet<>();
 
-    @SerializedName("deathscript")
-    @Expose
-    private final Set<String> deathscript = new LinkedHashSet<>();
+    @SerializedName(value = "deathscripts", alternate = { "deathscript" })
+    private final Set<String> deathscripts = new LinkedHashSet<>();
 
     @SerializedName("invincible")
-    @Expose
     private boolean invincible;
 
     @SerializedName("projectile")
-    @Expose
     private boolean projectile;
 
     @NotNull
     public Set<String> getScripts(@NotNull ToolMode toolMode) {
-        return toolMode == ToolMode.NORMAL_SCRIPT ? scripts : deathscript;
+        return toolMode == ToolMode.NORMAL_SCRIPT ? normalscripts : deathscripts;
     }
 
     public void setInvincible(boolean invincible) {
@@ -48,6 +43,12 @@ public class EntityScript {
 
     @Override
     public int hashCode() {
-        return Objects.hash(scripts, deathscript, invincible, projectile);
+        int hash = 1;
+        int prime = 31;
+        hash = prime * hash + normalscripts.hashCode();
+        hash = prime * hash + deathscripts.hashCode();
+        hash = prime * hash + Boolean.hashCode(invincible);
+        hash = prime * hash + Boolean.hashCode(projectile);
+        return hash;
     }
 }

@@ -32,7 +32,7 @@ public class EntityCooldown extends EntityOption {
         params[2] = params[0] + params[1];
 
         Json<PlayerTemp> json = new PlayerTempJson(getFileUniqueId());
-        TimerTemp timerTemp = new TimerTemp(getFileUniqueId(), getScriptLocation(), getScriptType());
+        TimerTemp timerTemp = new TimerTemp(getFileUniqueId(), getScriptLocation(), getScriptKey());
         Method timerTempSet = TimerTemp.class.getDeclaredMethod("set", long[].class);
         timerTempSet.setAccessible(true);
         timerTempSet.invoke(timerTemp, new Object[] { params });
@@ -45,6 +45,6 @@ public class EntityCooldown extends EntityOption {
     @NotNull
     protected Optional<TimerTemp> getTimerTemp() {
         Set<TimerTemp> timers = new PlayerTempJson(getFileUniqueId()).load().getTimerTemp();
-        return get(timers, new TimerTemp(getFileUniqueId(), getScriptLocation(), getScriptType()));
+        return get(timers, new TimerTemp(getFileUniqueId(), getScriptLocation(), getScriptKey()));
     }
 }

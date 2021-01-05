@@ -5,9 +5,8 @@ import com.github.yuttyann.scriptblockplus.file.json.BlockScriptJson;
 import com.github.yuttyann.scriptblockplus.listener.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
-import com.github.yuttyann.scriptblockplus.script.ScriptType;
+import com.github.yuttyann.scriptblockplus.script.ScriptKey;
 import com.github.yuttyann.scriptblockplus.script.option.other.ScriptAction;
-import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
@@ -33,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class EntityListener implements Listener {
 
@@ -92,7 +92,7 @@ public class EntityListener implements Listener {
                 }
                 if (info.getScripts(toolMode).size() > 0) {
                     for (String script : info.getScripts(toolMode)) {
-                        read((Player) damager, entity, StringUtils.split(script, "|"), Action.LEFT_CLICK_AIR);
+                        read((Player) damager, entity, script.split(Pattern.quote("|")), Action.LEFT_CLICK_AIR);
                     }
                 }
             } finally {
@@ -145,7 +145,7 @@ public class EntityListener implements Listener {
                 if (entityScript.getScripts(ToolMode.NORMAL_SCRIPT).size() > 0) {
                     if (!entityScript.isProjectile()) {
                         for (String script : entityScript.getScripts(ToolMode.NORMAL_SCRIPT)) {
-                            read(player, entity, StringUtils.split(script, "|"), Action.RIGHT_CLICK_AIR);
+                            read(player, entity, script.split(Pattern.quote("|")), Action.RIGHT_CLICK_AIR);
                         }
                     }
                     event.setCancelled(true);
@@ -158,10 +158,10 @@ public class EntityListener implements Listener {
 
     private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
         Location location = BlockCoords.fromString(array[1]);
-        if (!BlockScriptJson.has(location, ScriptType.valueOf(array[0]))) {
+        if (!BlockScriptJson.has(location, ScriptKey.valueOf(array[0]))) {
             return;
         }
-        EntityScriptRead entityScriptRead = new EntityScriptRead(player, entity, location, ScriptType.valueOf(array[0]));
+        EntityScriptRead entityScriptRead = new EntityScriptRead(player, entity, location, ScriptKey.valueOf(array[0]));
         entityScriptRead.put(ScriptAction.KEY, action);
         entityScriptRead.put(KEY_ENTITY, entity);
         entityScriptRead.read(0);

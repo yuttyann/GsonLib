@@ -25,13 +25,13 @@ ScriptConnection:
 InvincibleTextMessage: '&b此设置禁用对实体的损坏。'
 ProjectileTextMessage: '&b这是通过弹丸执行脚本的设置。'
 
-# %name%  : 設定の名前
-# %value% : 設定の値
+# %name%  : 设置名称
+# %value% : 设定值
 SettingValueMessage: '&a设置"&b&l%name%&r&a"的值已更改为"&e%value%&a"。'
 SettingViewMessage: '&d此设置"&b&l%name%&r&d"的值是"&e%value%&d"。'
 
-# %scripttype% : 脚本种类
-ScriptSelectMessage: '&a指定了脚本"%scripttype%"。'
+# %scriptkey% : 脚本键
+ScriptSelectMessage: '&a指定了脚本"%scriptkey%"。'
 
 # %entitytype% : 实体种类
 ScriptSettingEntityMessage: '&a我已经在实体"%entitytype%"上设置了一个脚本。'

@@ -1,9 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.yuttyann</groupId>
-    <name>ScriptEntityPlus</name>
     <artifactId>ScriptEntityPlus</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
+
+    <name>ScriptEntityPlus</name>
+    <url>https://github.com/yuttyann/ScriptEntityPlus</url>
+    <description>Allow you to add script to any entities.</description>
 
     <licenses>
         <license>
@@ -52,7 +55,7 @@
         <dependency>
             <groupId>com.github.yuttyann</groupId>
             <artifactId>ScriptBlockPlus</artifactId>
-            <version>v2.0.4</version>
+            <version>-84feb2520d-1</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

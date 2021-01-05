@@ -2,8 +2,7 @@ package com.github.yuttyann.scriptentityplus.listener;
 
 import com.github.yuttyann.scriptblockplus.enums.Permission;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
-import com.github.yuttyann.scriptblockplus.script.ScriptType;
-import com.github.yuttyann.scriptblockplus.utils.StringUtils;
+import com.github.yuttyann.scriptblockplus.script.ScriptKey;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.SEPermission;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
@@ -21,8 +20,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
-
-import static com.github.yuttyann.scriptblockplus.utils.StringUtils.split;
+import java.util.regex.Pattern;
 
 public class PlayerListener implements Listener {
 
@@ -53,13 +51,13 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         String chat = event.getMessage();
         if (chat.lastIndexOf("/" + KEY_TOOL) != -1 && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
-            String[] array = { split(chat, "/")[0] };
-            String type = ScriptType.valueOf(StringUtils.split(array[0], "|")[0]).type();
+            String[] array = { chat.split("/")[0] };
+            String type = ScriptKey.valueOf(array[0].split(Pattern.quote("|"))[0]).getName();
             SBPlayer.fromPlayer(player).getObjectMap().put(KEY_SCRIPT, array);
             SEConfig.SCRIPT_SELECT.replace(type).send(player);
             event.setCancelled(true);
         } else if (chat.lastIndexOf("/" + KEY_SETTINGS) != -1 && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
-            String[] array = split(split(chat, "/")[0], "=");
+            String[] array = chat.split("/")[0].split("=");
             EntityScriptJson entityScriptJson = new EntityScriptJson(UUID.fromString(array[1]));
             if (entityScriptJson.exists()) {
                 setting(player, array, entityScriptJson.load());

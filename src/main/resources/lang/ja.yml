@@ -29,8 +29,8 @@ ProjectileTextMessage: '&b発射物によってスクリプトを実行する設
 SettingValueMessage: '&a設定"&b&l%name%&r&a"の値は"&e%value%&a"に変更されました。'
 SettingViewMessage: '&d設定"&b&l%name%&r&d"の値は"&e%value%&d"です。'
 
-# %scripttype% : スクリプトの種類
-ScriptSelectMessage: '&aスクリプト"%scripttype%"を指定しました。'
+# %scriptkey% : スクリプトキー
+ScriptSelectMessage: '&aスクリプト"%scriptkey%"を指定しました。'
 
 # %toolmode%   : ツールのモード
 # %entitytype% : エンティティの種類
