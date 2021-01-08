@@ -2,7 +2,7 @@ ScriptEntityPlus [Java8 MC1.9-1.16.x]
 ==========
 概要
 --------------------------------------------------
-[ScriptBlockPlus](https://dev.bukkit.org/projects/scriptblock)に、エンティティにスクリプトを設定することができる機能を追加するプラグインです。  
+[ScriptBlockPlus](https://github.com/yuttyann/ScriptBlockPlus)に、エンティティにスクリプトを設定することができる機能を追加するプラグインです。  
 
 導入
 -----------
