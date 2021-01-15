@@ -48,7 +48,7 @@ import java.util.Objects;
 
 public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.0.5";
+    public static final String SBP_VERSION = "2.0.7";
 
     private Updater updater;
 
@@ -71,7 +71,7 @@ public class ScriptEntity extends JavaPlugin {
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
-                Bukkit.getConsoleSender().sendMessage("[ScriptEntityPlus] §cVersions below " + SBP_VERSION + " are not supported.");
+                getLogger().info("Versions below " + SBP_VERSION + " are not supported.");
                 manager.disablePlugin(this);
             }
         }

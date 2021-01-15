@@ -16,12 +16,12 @@
 package com.github.yuttyann.scriptentityplus.json;
 
 import com.github.yuttyann.scriptblockplus.file.Json;
-import com.github.yuttyann.scriptblockplus.file.json.annotation.JsonOptions;
+import com.github.yuttyann.scriptblockplus.file.json.annotation.JsonTag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-@JsonOptions(path = "json/entityscript", file = "{id}.json")
+@JsonTag(path = "json/entityscript")
 public class EntityScriptJson extends Json<EntityScript> {
 
     public EntityScriptJson(@NotNull UUID uuid) {
