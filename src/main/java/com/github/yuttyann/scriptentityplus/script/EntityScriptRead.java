@@ -70,7 +70,7 @@ public final class EntityScriptRead extends ScriptRead {
         }
         if (!sortScripts(blockScript.get(scriptLocation).getScript())) {
             SBConfig.ERROR_SCRIPT_EXECUTE.replace(scriptKey).send(sbPlayer);
-            SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptKey).console();
+            SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(scriptLocation, scriptKey).console();
             return false;
         }
         Bukkit.getPluginManager().callEvent(new ScriptReadStartEvent(ramdomId, this));
@@ -98,7 +98,7 @@ public final class EntityScriptRead extends ScriptRead {
         }
         EndProcessManager.forEach(e -> e.success(this));
         new PlayerCountJson(sbPlayer.getUniqueId()).action(PlayerCount::add, scriptLocation, scriptKey);
-        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(sbPlayer.getName(), scriptLocation, scriptKey).console();
+        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(scriptLocation, scriptKey).console();
         return true;
     }
 
