@@ -249,12 +249,14 @@ public class ScriptConnection extends ItemAction {
             return "null";
         }
         ScriptParam scriptParam = new BlockScriptJson(scriptKey).load().get(location);
+        String selector = scriptParam.getSelector();
         StringBuilder builder = new StringBuilder();
         StringJoiner joiner = new StringJoiner("\n§6- §b");
         scriptParam.getScript().forEach(joiner::add);
         Stream<String> author = scriptParam.getAuthor().stream().map(Utils::getName);
         builder.append("§eAuthor: §a").append(author.collect(Collectors.joining(", ")));
         builder.append("\n§eCoords: §a").append(BlockCoords.getFullCoords(location));
+        builder.append("\n§eRedstone: §").append(selector == null ? "cfalse" : "atrue §d: §a" + selector);
         builder.append("\n§eScripts:§e\n§6- §b").append(joiner.toString());
         return builder.toString();
     }
