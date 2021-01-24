@@ -15,14 +15,14 @@
  */
 package com.github.yuttyann.scriptentityplus.json;
 
-import com.github.yuttyann.scriptblockplus.file.Json;
+import com.github.yuttyann.scriptblockplus.file.json.SingleJson;
 import com.github.yuttyann.scriptblockplus.file.json.annotation.JsonTag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 @JsonTag(path = "json/entityscript")
-public class EntityScriptJson extends Json<EntityScript> {
+public class EntityScriptJson extends SingleJson<EntityScript> {
 
     public EntityScriptJson(@NotNull UUID uuid) {
         super(uuid);
@@ -30,7 +30,7 @@ public class EntityScriptJson extends Json<EntityScript> {
 
     @Override
     @NotNull
-    protected EntityScript newInstance(@NotNull Object[] object) {
+    protected EntityScript newInstance() {
         return new EntityScript();
     }
 }

@@ -15,9 +15,7 @@
  */
 package com.github.yuttyann.scriptentityplus.script.option;
 
-import com.github.yuttyann.scriptblockplus.file.Json;
-import com.github.yuttyann.scriptblockplus.file.json.PlayerTempJson;
-import com.github.yuttyann.scriptblockplus.file.json.element.PlayerTemp;
+import com.github.yuttyann.scriptblockplus.file.json.derived.PlayerTempJson;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.script.option.OptionTag;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
@@ -46,7 +44,7 @@ public class EntityCooldown extends EntityOption {
         long[] params = new long[] { System.currentTimeMillis(), value, 0L };
         params[2] = params[0] + params[1];
 
-        Json<PlayerTemp> json = new PlayerTempJson(getFileUniqueId());
+        PlayerTempJson json = new PlayerTempJson(getFileUniqueId());
         TimerTemp timerTemp = new TimerTemp(getFileUniqueId(), getScriptLocation(), getScriptKey());
         Method timerTempSet = TimerTemp.class.getDeclaredMethod("set", long[].class);
         timerTempSet.setAccessible(true);
