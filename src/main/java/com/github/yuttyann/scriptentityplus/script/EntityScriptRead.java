@@ -30,7 +30,7 @@ import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptblockplus.utils.unmodifiable.UnmodifiableLocation;
-import com.github.yuttyann.scriptentityplus.ScriptEntity;
+import com.github.yuttyann.scriptentityplus.file.SEConfig;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 
 import org.bukkit.Bukkit;
@@ -39,7 +39,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -89,7 +88,7 @@ public final class EntityScriptRead extends ScriptRead {
                 EndProcessManager.forEach(e -> e.failed(this));
                 return false;
             }
-            String script = scripts.get(this.index);
+            String script = replace(scripts.get(this.index));
             Option option = OptionManager.newInstance(script);
             this.value = Placeholder.INSTANCE.replace(getPlayer(), option.getValue(script));
             if (!option.callOption(this) && isFailedIgnore(option)) {
@@ -104,8 +103,8 @@ public final class EntityScriptRead extends ScriptRead {
 
     @NotNull
     private String replace(String script) {
-        List<String> list = ScriptEntity.getInstance().getConfig().getStringList("Replaces");
-        String result = list.stream()
+        String result = SEConfig.REPLACES.getValue()
+                .stream()
                 .map(s -> s.split(">>>"))
                 .filter(a -> a.length > 1 && script.contains(a[0]))
                 .map(a -> StringUtils.replace(script, a[0], a[1]))
