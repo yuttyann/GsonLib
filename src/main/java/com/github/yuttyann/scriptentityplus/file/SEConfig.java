@@ -33,9 +33,9 @@ public class SEConfig {
     public static final ConfigKey<String> PROJECTILE_TEXT = stringKey("ProjectileTextMessage", "");
 
     // Replace Keys
-    public static final ReplaceKey SETTING_VALUE = replaceKey(stringKey("SettingValueMessage", ""), "%name%", "%value%");
-    public static final ReplaceKey SETTING_VIEW = replaceKey(stringKey("SettingViewMessage", ""), "%name%", "%value%");
-    public static final ReplaceKey SCRIPT_SELECT = replaceKey(stringKey("ScriptSelectMessage", ""), "%scriptkey%");
-    public static final ReplaceKey SCRIPT_SETTING_ENTITY = replaceKey(stringKey("ScriptSettingEntityMessage", ""), "%toolmode%", "%entitytype%");
-    public static final ReplaceKey SCRIPT_REMOVE_ENTITY = replaceKey(stringKey("ScriptRemoveEntityMessage", ""), "%entitytype%");
+    public static final ReplaceKey SETTING_VALUE = replaceKey("SettingValueMessage", "", "%name%", "%value%");
+    public static final ReplaceKey SETTING_VIEW = replaceKey("SettingViewMessage", "", "%name%", "%value%");
+    public static final ReplaceKey SCRIPT_SELECT = replaceKey("ScriptSelectMessage", "", "%scriptkey%");
+    public static final ReplaceKey SCRIPT_SETTING_ENTITY = replaceKey("ScriptSettingEntityMessage", "", "%toolmode%", "%entitytype%");
+    public static final ReplaceKey SCRIPT_REMOVE_ENTITY = replaceKey("ScriptRemoveEntityMessage", "", "%entitytype%");
 }
