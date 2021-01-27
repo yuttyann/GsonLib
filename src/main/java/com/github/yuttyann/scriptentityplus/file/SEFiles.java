@@ -17,6 +17,7 @@ package com.github.yuttyann.scriptentityplus.file;
 
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.event.FileReloadEvent;
+import com.github.yuttyann.scriptblockplus.file.SBFile;
 import com.github.yuttyann.scriptblockplus.file.config.ConfigKeys;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import org.bukkit.Bukkit;
@@ -48,9 +49,9 @@ public class SEFiles implements Listener {
 
         // ファイル"json/scriptentity"を"json/entityscript"にリネーム
         File dataFolder = ScriptBlock.getInstance().getDataFolder();
-        File scriptEntity = new File(dataFolder, "json" + S + "scriptentity");
+        File scriptEntity = new SBFile(dataFolder, "json/scriptentity");
         if (scriptEntity.exists() && scriptEntity.isDirectory()) {
-            scriptEntity.renameTo(new File(dataFolder, "json" + S + "entityscript"));
+            scriptEntity.renameTo(new SBFile(dataFolder, "json/entityscript"));
         }
     }
 }
