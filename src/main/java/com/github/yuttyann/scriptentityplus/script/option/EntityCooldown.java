@@ -16,7 +16,6 @@
 package com.github.yuttyann.scriptentityplus.script.option;
 
 import com.github.yuttyann.scriptblockplus.file.json.derived.PlayerTempJson;
-import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.script.option.OptionTag;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
 import com.github.yuttyann.scriptentityplus.script.EntityOption;
@@ -28,12 +27,6 @@ import java.util.Set;
 
 @OptionTag(name = "entity_cooldown", syntax = "@e_cooldown:")
 public class EntityCooldown extends EntityOption {
-
-    @Override
-    @NotNull
-    public Option newInstance() {
-        return new EntityCooldown();
-    }
 
     @Override
     protected boolean isValid() throws Exception {

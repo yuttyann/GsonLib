@@ -19,24 +19,16 @@ import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
 import com.github.yuttyann.scriptblockplus.script.ScriptRead;
-import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.script.option.OptionTag;
 import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
 import com.github.yuttyann.scriptentityplus.script.EntityOption;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
 
 @OptionTag(name = "entity_delay", syntax = "@e_delay:")
 public class EntityDelay extends EntityOption implements Runnable {
 
     private boolean saveDelay;
-
-    @Override
-    @NotNull
-    public Option newInstance() {
-        return new EntityDelay();
-    }
 
     @Override
     public boolean isFailedIgnore() {

@@ -65,9 +65,9 @@ public class ScriptEntity extends JavaPlugin {
                 manager.registerEvents(new EntityListener(), this);
 
                 ScriptBlockAPI api = ScriptBlock.getInstance().getAPI();
-                api.registerOption(new OptionIndex(IndexType.BEFORE, OldCooldown.class), EntityOldCooldown.class);
-                api.registerOption(new OptionIndex(IndexType.BEFORE, Cooldown.class), EntityCooldown.class);
-                api.registerOption(new OptionIndex(IndexType.BEFORE, Delay.class), EntityDelay.class);
+                api.registerOption(new OptionIndex(IndexType.BEFORE, OldCooldown.class), () -> new EntityOldCooldown());
+                api.registerOption(new OptionIndex(IndexType.BEFORE, Cooldown.class), () -> new EntityCooldown());
+                api.registerOption(new OptionIndex(IndexType.BEFORE, Delay.class), () -> new EntityDelay());
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
