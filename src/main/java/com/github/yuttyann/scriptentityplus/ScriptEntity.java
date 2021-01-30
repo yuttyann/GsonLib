@@ -18,7 +18,6 @@ package com.github.yuttyann.scriptentityplus;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.ScriptBlockAPI;
 import com.github.yuttyann.scriptblockplus.Updater;
-import com.github.yuttyann.scriptblockplus.enums.IndexType;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.script.option.OptionIndex;
@@ -33,6 +32,7 @@ import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
 import com.github.yuttyann.scriptentityplus.script.option.EntityCooldown;
 import com.github.yuttyann.scriptentityplus.script.option.EntityDelay;
 import com.github.yuttyann.scriptentityplus.script.option.EntityOldCooldown;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -65,9 +65,9 @@ public class ScriptEntity extends JavaPlugin {
                 manager.registerEvents(new EntityListener(), this);
 
                 ScriptBlockAPI api = ScriptBlock.getInstance().getAPI();
-                api.registerOption(new OptionIndex(IndexType.BEFORE, OldCooldown.class), () -> new EntityOldCooldown());
-                api.registerOption(new OptionIndex(IndexType.BEFORE, Cooldown.class), () -> new EntityCooldown());
-                api.registerOption(new OptionIndex(IndexType.BEFORE, Delay.class), () -> new EntityDelay());
+                api.registerOption(OptionIndex.before(OldCooldown.class), EntityOldCooldown::new);
+                api.registerOption(OptionIndex.before(Cooldown.class), EntityCooldown::new);
+                api.registerOption(OptionIndex.before(Delay.class), EntityDelay::new);
 
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
