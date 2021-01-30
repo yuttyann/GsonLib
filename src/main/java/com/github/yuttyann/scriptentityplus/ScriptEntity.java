@@ -16,10 +16,10 @@
 package com.github.yuttyann.scriptentityplus;
 
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
-import com.github.yuttyann.scriptblockplus.ScriptBlockAPI;
 import com.github.yuttyann.scriptblockplus.Updater;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
+import com.github.yuttyann.scriptblockplus.manager.OptionManager;
 import com.github.yuttyann.scriptblockplus.script.option.OptionIndex;
 import com.github.yuttyann.scriptblockplus.script.option.time.Cooldown;
 import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
@@ -59,16 +59,24 @@ public class ScriptEntity extends JavaPlugin {
             manager.disablePlugin(this);
         } else {
             if (Utils.isUpperVersion(ScriptBlock.getInstance().getDescription().getVersion(), SBP_VERSION)) {
+                
+                // 全ファイルの読み込み
                 SEFiles.reload();
-                ItemAction.register(new ScriptConnection());
+
+                // リスナーの登録
                 manager.registerEvents(new PlayerListener(), this);
                 manager.registerEvents(new EntityListener(), this);
 
-                ScriptBlockAPI api = ScriptBlock.getInstance().getAPI();
-                api.registerOption(OptionIndex.before(OldCooldown.class), EntityOldCooldown::new);
-                api.registerOption(OptionIndex.before(Cooldown.class), EntityCooldown::new);
-                api.registerOption(OptionIndex.before(Delay.class), EntityDelay::new);
+                // アイテムアクションの登録
+                ItemAction.register(new ScriptConnection());
 
+                // オプションの登録（複数登録するため、APIではなくOptionManagerから直接登録する）
+                OptionManager.register(OptionIndex.before(OldCooldown.class), EntityOldCooldown::new);
+                OptionManager.register(OptionIndex.before(Cooldown.class), EntityCooldown::new);
+                OptionManager.register(OptionIndex.before(Delay.class), EntityDelay::new);
+                OptionManager.update();
+
+                // アップデート処理
                 checkUpdate(Bukkit.getConsoleSender(), false);
             } else {
                 getLogger().info("Versions below " + SBP_VERSION + " are not supported.");
