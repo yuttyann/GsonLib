@@ -78,6 +78,8 @@ public class ScriptEntity extends JavaPlugin {
 
                 // アップデート処理
                 checkUpdate(Bukkit.getConsoleSender(), false);
+
+                Bukkit.getWorlds().forEach(w -> w.getEntities().forEach(this::removeArmorStand));
             } else {
                 getLogger().info("Versions below " + SBP_VERSION + " are not supported.");
                 manager.disablePlugin(this);
@@ -115,6 +117,18 @@ public class ScriptEntity extends JavaPlugin {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean removeArmorStand(@NotNull Entity entity) {
+        if (!(entity instanceof ArmorStand)) {
+            return false;
+        }
+        ArmorStand armorStand = (ArmorStand) entity;
+        if (armorStand.isSmall() && Objects.equals(armorStand.getCustomName(), "DeathScriptDummy")) {
+            armorStand.remove();
+            return true;
+        }
+        return false;
     }
 
     @NotNull

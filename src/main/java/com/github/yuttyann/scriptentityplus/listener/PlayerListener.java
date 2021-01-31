@@ -32,6 +32,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -42,6 +43,12 @@ public class PlayerListener implements Listener {
     public static final String KEY_TOOL = UUID.nameUUIDFromBytes("KEY_TOOL".getBytes()).toString();
     public static final String KEY_SETTINGS = UUID.nameUUIDFromBytes("KEY_SETTINGS".getBytes()).toString();
     public static final String KEY_SCRIPT = Utils.randomUUID();
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onWorldLoad(WorldLoadEvent event) {
+        ScriptEntity scriptEntity = ScriptEntity.getInstance();
+        event.getWorld().getEntities().forEach(scriptEntity::removeArmorStand);
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
