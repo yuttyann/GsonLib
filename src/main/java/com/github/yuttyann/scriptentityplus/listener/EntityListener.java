@@ -41,6 +41,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,12 @@ public class EntityListener implements Listener {
     public static final String KEY_OFF = Utils.randomUUID();
     public static final String KEY_ENTITY = Utils.randomUUID();
     public static final String KEY_CLICK_ENTITY = Utils.randomUUID();
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onWorldLoad(WorldLoadEvent event) {
+        ScriptEntity scriptEntity = ScriptEntity.getInstance();
+        event.getWorld().getEntities().forEach(scriptEntity::removeArmorStand);
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
