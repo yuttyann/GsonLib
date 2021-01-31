@@ -94,7 +94,7 @@ public class EntityListener implements Listener {
                     if (entity instanceof ArmorStand) {
                         entity.remove();
                     }
-                    if (entity.isDead() || ((LivingEntity) entity).getHealth() - damage < 1.0D) {
+                    if (entity.isDead() || (((LivingEntity) entity).getHealth() - damage) <= 0.0D) {
                         toolMode = ToolMode.DEATH_SCRIPT;
                     }
                 } else {
