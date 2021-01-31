@@ -16,10 +16,13 @@
 package com.github.yuttyann.scriptentityplus.listener;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
+import com.github.yuttyann.scriptblockplus.event.DelayEndEvent;
+import com.github.yuttyann.scriptblockplus.event.DelayRunEvent;
 import com.github.yuttyann.scriptblockplus.file.json.derived.BlockScriptJson;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.player.ObjectMap;
 import com.github.yuttyann.scriptblockplus.player.SBPlayer;
+import com.github.yuttyann.scriptblockplus.script.SBRead;
 import com.github.yuttyann.scriptblockplus.script.ScriptKey;
 import com.github.yuttyann.scriptblockplus.script.option.other.ScriptAction;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
@@ -46,16 +49,11 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class EntityListener implements Listener {
 
-    public static final Set<Entity> TEMP_ENTITIES = new HashSet<>();
-
     public static final String KEY_OFF = Utils.randomUUID();
-    public static final String KEY_ENTITY = Utils.randomUUID();
     public static final String KEY_CLICK_ENTITY = Utils.randomUUID();
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -110,7 +108,7 @@ public class EntityListener implements Listener {
             }
             try {
                 if (toolMode == ToolMode.DEATH_SCRIPT) {
-                    TEMP_ENTITIES.add(entity = ScriptEntity.getInstance().createArmorStand(entity.getLocation()));
+                    entity = ScriptEntity.getInstance().createArmorStand(entity.getLocation());
                 }
                 if (info.getScripts(toolMode).size() > 0) {
                     for (String script : info.getScripts(toolMode)) {
@@ -118,8 +116,9 @@ public class EntityListener implements Listener {
                     }
                 }
             } finally {
-                TEMP_ENTITIES.forEach(Entity::remove);
-                TEMP_ENTITIES.clear();
+                if (toolMode == ToolMode.DEATH_SCRIPT) {
+                    entity.remove();
+                }
             }
         }
     }
@@ -127,7 +126,10 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) {
-            new EntityScriptJson(event.getEntity().getUniqueId()).deleteFile();
+            EntityScriptJson scriptJson = new EntityScriptJson(event.getEntity().getUniqueId());
+            if (scriptJson.exists()) {
+                scriptJson.deleteFile();
+            }
         }
     }
 
@@ -178,14 +180,33 @@ public class EntityListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDelayRun(DelayRunEvent event) {
+        if (!(event.getSBRead() instanceof EntityScriptRead)) {
+            return;
+        }
+        EntityScriptRead scriptRead = (EntityScriptRead) event.getSBRead();
+        if (scriptRead.getEntity().isDead()) {
+            scriptRead.setEntity(ScriptEntity.getInstance().createArmorStand(scriptRead.getLocation()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDelayEnd(DelayEndEvent event) {
+        SBRead sbRead = event.getSBRead();
+        if (sbRead instanceof EntityScriptRead) {
+            ScriptEntity.getInstance().removeArmorStand(((EntityScriptRead) sbRead).getEntity());
+        }
+    }
+
     private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
         Location location = BlockCoords.fromString(array[1]);
         if (!BlockScriptJson.has(location, ScriptKey.valueOf(array[0]))) {
             return;
         }
-        EntityScriptRead entityScriptRead = new EntityScriptRead(player, entity, location, ScriptKey.valueOf(array[0]));
-        entityScriptRead.put(ScriptAction.KEY, action);
-        entityScriptRead.put(KEY_ENTITY, entity);
-        entityScriptRead.read(0);
+        EntityScriptRead scriptRead = new EntityScriptRead(player, location, ScriptKey.valueOf(array[0]));
+        scriptRead.setEntity(entity);
+        scriptRead.put(ScriptAction.KEY, action);
+        scriptRead.read(0);
     }
 }

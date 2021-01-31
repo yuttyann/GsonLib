@@ -26,7 +26,6 @@ import static com.github.yuttyann.scriptblockplus.file.config.ConfigKeys.*;
 public class SEConfig {
 
     // List Key
-    public static final ConfigKey<List<String>> REPLACES = stringListKey("Replaces", new ArrayList<>());
     public static final ConfigKey<List<String>> SCRIPT_CONNECTION = stringListKey("ScriptConnection", new ArrayList<>());
 
     // String Keys

@@ -19,19 +19,11 @@ import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.Updater;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
-import com.github.yuttyann.scriptblockplus.manager.OptionManager;
-import com.github.yuttyann.scriptblockplus.script.option.OptionIndex;
-import com.github.yuttyann.scriptblockplus.script.option.time.Cooldown;
-import com.github.yuttyann.scriptblockplus.script.option.time.Delay;
-import com.github.yuttyann.scriptblockplus.script.option.time.OldCooldown;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.file.SEFiles;
 import com.github.yuttyann.scriptentityplus.item.ScriptConnection;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
-import com.github.yuttyann.scriptentityplus.script.option.EntityCooldown;
-import com.github.yuttyann.scriptentityplus.script.option.EntityDelay;
-import com.github.yuttyann.scriptentityplus.script.option.EntityOldCooldown;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -70,15 +62,10 @@ public class ScriptEntity extends JavaPlugin {
                 // アイテムアクションの登録
                 ItemAction.register(new ScriptConnection());
 
-                // オプションの登録（複数登録するため、APIではなくOptionManagerから直接登録する）
-                OptionManager.register(OptionIndex.before(OldCooldown.class), EntityOldCooldown::new);
-                OptionManager.register(OptionIndex.before(Cooldown.class), EntityCooldown::new);
-                OptionManager.register(OptionIndex.before(Delay.class), EntityDelay::new);
-                OptionManager.update();
-
                 // アップデート処理
                 checkUpdate(Bukkit.getConsoleSender(), false);
 
+                // ダミーエンティティが削除されずに残っている場合は検索して削除
                 Bukkit.getWorlds().forEach(w -> w.getEntities().forEach(this::removeArmorStand));
             } else {
                 getLogger().info("Versions below " + SBP_VERSION + " are not supported.");
@@ -89,8 +76,7 @@ public class ScriptEntity extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        EntityListener.TEMP_ENTITIES.forEach(Entity::remove);
-        EntityListener.TEMP_ENTITIES.clear();
+        Bukkit.getWorlds().forEach(w -> w.getEntities().forEach(this::removeArmorStand));
     }
 
     public void checkUpdate(@NotNull CommandSender sender, boolean latestMessage) {

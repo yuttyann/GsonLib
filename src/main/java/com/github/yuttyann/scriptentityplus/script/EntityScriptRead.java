@@ -15,100 +15,95 @@
  */
 package com.github.yuttyann.scriptentityplus.script;
 
-import com.github.yuttyann.scriptblockplus.event.ScriptReadEndEvent;
-import com.github.yuttyann.scriptblockplus.event.ScriptReadStartEvent;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.file.json.derived.PlayerCountJson;
 import com.github.yuttyann.scriptblockplus.file.json.element.PlayerCount;
 import com.github.yuttyann.scriptblockplus.hook.plugin.Placeholder;
 import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
 import com.github.yuttyann.scriptblockplus.manager.OptionManager;
-import com.github.yuttyann.scriptblockplus.player.ObjectMap;
 import com.github.yuttyann.scriptblockplus.script.ScriptRead;
 import com.github.yuttyann.scriptblockplus.script.ScriptKey;
+import com.github.yuttyann.scriptblockplus.script.option.BaseOption;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
-import com.github.yuttyann.scriptblockplus.utils.StreamUtils;
-import com.github.yuttyann.scriptblockplus.utils.StringUtils;
+import com.github.yuttyann.scriptblockplus.script.option.chat.BypassOP;
+import com.github.yuttyann.scriptblockplus.script.option.chat.Command;
+import com.github.yuttyann.scriptblockplus.script.option.chat.Console;
+import com.github.yuttyann.scriptblockplus.script.option.other.PlaySound;
+import com.github.yuttyann.scriptblockplus.script.option.vault.BypassGroup;
+import com.github.yuttyann.scriptblockplus.script.option.vault.BypassPerm;
 import com.github.yuttyann.scriptblockplus.utils.unmodifiable.UnmodifiableLocation;
-import com.github.yuttyann.scriptentityplus.file.SEConfig;
-import com.github.yuttyann.scriptentityplus.listener.EntityListener;
+import com.google.common.collect.Sets;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public final class EntityScriptRead extends ScriptRead {
 
-    private final Location scriptLocation;
+    @SuppressWarnings("unchecked")
+    /**
+     * エンティティの座標を返すオプションの一覧
+     */
+    private final Set<Class<? extends BaseOption>> FILTERS = Sets.newHashSet(
+        Command.class,
+        Console.class,
+        BypassOP.class,
+        BypassPerm.class,
+        BypassGroup.class,
+        PlaySound.class
+    );
 
-    public EntityScriptRead(@NotNull Player player, @NotNull Entity entity, @NotNull Location location, @NotNull ScriptKey scriptKey) {
-        super(player, entity.getLocation(), scriptKey);
-        this.scriptLocation = new UnmodifiableLocation(location);
+    private Option option;
+    private Entity entity;
+    private Location entityLocation;
+
+    public EntityScriptRead(@NotNull Player player, @NotNull Location location, @NotNull ScriptKey scriptKey) {
+        super(player, location, scriptKey);
+    }
+
+    public final void addFilter(@NotNull Class<? extends BaseOption> optionClass) {
+        FILTERS.add(optionClass);
+    }
+
+    public final void setEntity(@NotNull Entity entity) {
+        this.entity = entity;
+        this.entityLocation = new UnmodifiableLocation(entity.getLocation());
     }
 
     @NotNull
     public final Entity getEntity() {
-        return (Entity) Objects.requireNonNull(get(EntityListener.KEY_ENTITY));
-    }
-
-    @NotNull
-    public final Location getScriptLocation() {
-        return scriptLocation;
+        return entity;
     }
 
     @Override
-    public boolean read(int index) {
-        if (!blockScript.has(scriptLocation)) {
-            SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
-            return false;
+    @NotNull
+    public final Location getLocation() {
+        if (FILTERS.contains(option.getClass())) {
+            return entityLocation;
         }
-        if (!sortScripts(blockScript.get(scriptLocation).getScript())) {
-            SBConfig.ERROR_SCRIPT_EXECUTE.replace(scriptKey).send(sbPlayer);
-            SBConfig.CONSOLE_ERROR_SCRIPT_EXECUTE.replace(scriptLocation, scriptKey).console();
-            return false;
-        }
-        Bukkit.getPluginManager().callEvent(new ScriptReadStartEvent(ramdomId, this));
-        try {
-            return perform(index);
-        } finally {
-            Bukkit.getPluginManager().callEvent(new ScriptReadEndEvent(ramdomId, this));
-            StreamUtils.filter(this, ScriptRead::isInitialize, ObjectMap::clear);
-        }
+        return super.getLocation();
     }
 
     @Override
     protected boolean perform(final int index) {
         for (this.index = index; this.index < scripts.size(); this.index++) {
-            if (!sbPlayer.isOnline()) {
+            if (!sbPlayer.isOnline() || entity.isDead()) {
                 EndProcessManager.forEach(e -> e.failed(this));
                 return false;
             }
-            String script = replace(scripts.get(this.index));
-            Option option = OptionManager.newInstance(script);
+            String script = scripts.get(this.index);
+            this.option = OptionManager.newInstance(script);
             this.value = Placeholder.INSTANCE.replace(getPlayer(), option.getValue(script));
             if (!option.callOption(this) && isFailedIgnore(option)) {
                 return false;
             }
         }
         EndProcessManager.forEach(e -> e.success(this));
-        new PlayerCountJson(sbPlayer.getUniqueId()).action(PlayerCount::add, scriptLocation, scriptKey);
-        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(scriptLocation, scriptKey).console();
+        new PlayerCountJson(sbPlayer).action(PlayerCount::add, location, scriptKey);
+        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(location, scriptKey).console();
         return true;
-    }
-
-    @NotNull
-    private String replace(String script) {
-        String result = SEConfig.REPLACES.getValue()
-                .stream()
-                .map(s -> s.split(">>>"))
-                .filter(a -> a.length > 1 && script.contains(a[0]))
-                .map(a -> StringUtils.replace(script, a[0], a[1]))
-                .collect(Collectors.joining());
-        return StringUtils.isEmpty(result) ? script : result;
     }
 }

@@ -17,7 +17,6 @@ package com.github.yuttyann.scriptentityplus.script;
 
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerOption;
 import com.github.yuttyann.scriptblockplus.script.option.time.TimerTemp;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,15 +38,7 @@ public abstract class EntityOption extends TimerOption {
         return getPlayer();
     }
 
-    @NotNull
-    public final Location getScriptLocation() {
-        if (isEntityRead()) {
-            return ((EntityScriptRead) getTempMap()).getScriptLocation();
-        }
-        return getLocation();
-    }
-
     public boolean isEntityRead() {
-        return getTempMap().getClass().equals(EntityScriptRead.class);
+        return getTempMap() instanceof EntityScriptRead;
     }
 }
