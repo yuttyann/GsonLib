@@ -17,15 +17,32 @@ package com.github.yuttyann.scriptentityplus.file;
 
 import com.github.yuttyann.scriptblockplus.file.config.ConfigKey;
 import com.github.yuttyann.scriptblockplus.file.config.ReplaceKey;
+import com.github.yuttyann.scriptblockplus.script.option.chat.BypassOP;
+import com.github.yuttyann.scriptblockplus.script.option.chat.Command;
+import com.github.yuttyann.scriptblockplus.script.option.chat.Console;
+import com.github.yuttyann.scriptblockplus.script.option.other.PlaySound;
+import com.github.yuttyann.scriptblockplus.script.option.vault.BypassGroup;
+import com.github.yuttyann.scriptblockplus.script.option.vault.BypassPerm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.github.yuttyann.scriptblockplus.file.config.ConfigKeys.*;
 
 public class SEConfig {
 
+    private static final List<String> DEFAULT = Arrays.asList(
+        Command.class.getName(),
+        Console.class.getName(),
+        BypassOP.class.getName(),
+        BypassPerm.class.getName(),
+        BypassGroup.class.getName(),
+        PlaySound.class.getName()
+    );
+
     // List Key
+    public static final ConfigKey<List<String>> FILTER_OPTIONS = stringListKey("FilterOptions", DEFAULT);
     public static final ConfigKey<List<String>> SCRIPT_CONNECTION = stringListKey("ScriptConnection", new ArrayList<>());
 
     // String Keys

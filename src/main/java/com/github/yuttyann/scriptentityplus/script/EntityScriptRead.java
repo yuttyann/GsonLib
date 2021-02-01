@@ -25,36 +25,27 @@ import com.github.yuttyann.scriptblockplus.script.ScriptRead;
 import com.github.yuttyann.scriptblockplus.script.ScriptKey;
 import com.github.yuttyann.scriptblockplus.script.option.BaseOption;
 import com.github.yuttyann.scriptblockplus.script.option.Option;
-import com.github.yuttyann.scriptblockplus.script.option.chat.BypassOP;
-import com.github.yuttyann.scriptblockplus.script.option.chat.Command;
-import com.github.yuttyann.scriptblockplus.script.option.chat.Console;
-import com.github.yuttyann.scriptblockplus.script.option.other.PlaySound;
-import com.github.yuttyann.scriptblockplus.script.option.vault.BypassGroup;
-import com.github.yuttyann.scriptblockplus.script.option.vault.BypassPerm;
 import com.github.yuttyann.scriptblockplus.utils.unmodifiable.UnmodifiableLocation;
-import com.google.common.collect.Sets;
+import com.github.yuttyann.scriptentityplus.file.SEFiles;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public final class EntityScriptRead extends ScriptRead {
 
-    @SuppressWarnings("unchecked")
     /**
      * エンティティの座標を返すオプションの一覧
      */
-    private final Set<Class<? extends BaseOption>> FILTERS = Sets.newHashSet(
-        Command.class,
-        Console.class,
-        BypassOP.class,
-        BypassPerm.class,
-        BypassGroup.class,
-        PlaySound.class
-    );
+    private static final Set<Class<? extends BaseOption>> FILTERS = new HashSet<>();
+
+    static {
+        SEFiles.reloadFilters();
+    }
 
     private Option option;
     private Entity entity;
@@ -64,8 +55,9 @@ public final class EntityScriptRead extends ScriptRead {
         super(player, location, scriptKey);
     }
 
-    public final void addFilter(@NotNull Class<? extends BaseOption> optionClass) {
-        FILTERS.add(optionClass);
+    @NotNull
+    public static final Set<Class<? extends BaseOption>> getFilters() {
+        return FILTERS;
     }
 
     public final void setEntity(@NotNull Entity entity) {

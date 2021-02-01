@@ -19,7 +19,10 @@ import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.event.FileReloadEvent;
 import com.github.yuttyann.scriptblockplus.file.SBFile;
 import com.github.yuttyann.scriptblockplus.file.config.ConfigKeys;
+import com.github.yuttyann.scriptblockplus.script.option.BaseOption;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
+import com.github.yuttyann.scriptentityplus.script.EntityScriptRead;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,6 +42,7 @@ public class SEFiles implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onFileReload(FileReloadEvent event) {
         reload();
+        reloadFilters();
     }
 
     public static void reload() {
@@ -52,6 +56,18 @@ public class SEFiles implements Listener {
         File scriptEntity = new SBFile(dataFolder, "json/scriptentity");
         if (scriptEntity.exists() && scriptEntity.isDirectory()) {
             scriptEntity.renameTo(new SBFile(dataFolder, "json/entityscript"));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void reloadFilters() {
+        try {
+            EntityScriptRead.getFilters().clear();
+            for (String path : SEConfig.FILTER_OPTIONS.getValue()) {
+                EntityScriptRead.getFilters().add((Class<? extends BaseOption>) Class.forName(path));
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
