@@ -15,19 +15,20 @@
  */
 package com.github.yuttyann.scriptentityplus.json;
 
+import com.github.yuttyann.scriptblockplus.file.json.BaseElement;
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class EntityScript {
+public class EntityScript extends BaseElement {
 
     @SerializedName(value = "normalscripts", alternate = { "scripts" })
-    private final Set<String> normalscripts = new LinkedHashSet<>();
+    private final Set<String> normalScripts = new LinkedHashSet<>();
 
     @SerializedName(value = "deathscripts", alternate = { "deathscript" })
-    private final Set<String> deathscripts = new LinkedHashSet<>();
+    private final Set<String> deathScripts = new LinkedHashSet<>();
 
     @SerializedName("invincible")
     private boolean invincible;
@@ -37,7 +38,7 @@ public class EntityScript {
 
     @NotNull
     public Set<String> getScripts(@NotNull ToolMode toolMode) {
-        return toolMode == ToolMode.NORMAL_SCRIPT ? normalscripts : deathscripts;
+        return toolMode == ToolMode.NORMAL_SCRIPT ? normalScripts : deathScripts;
     }
 
     public void setInvincible(boolean invincible) {
@@ -54,16 +55,5 @@ public class EntityScript {
 
     public boolean isProjectile() {
         return projectile;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        int prime = 31;
-        hash = prime * hash + normalscripts.hashCode();
-        hash = prime * hash + deathscripts.hashCode();
-        hash = prime * hash + Boolean.hashCode(invincible);
-        hash = prime * hash + Boolean.hashCode(projectile);
-        return hash;
     }
 }

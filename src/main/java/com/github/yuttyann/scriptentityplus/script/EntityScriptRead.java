@@ -15,6 +15,7 @@
  */
 package com.github.yuttyann.scriptentityplus.script;
 
+import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.file.json.derived.PlayerCountJson;
 import com.github.yuttyann.scriptblockplus.file.json.element.PlayerCount;
@@ -51,8 +52,8 @@ public final class EntityScriptRead extends ScriptRead {
     private Entity entity;
     private Location entityLocation;
 
-    public EntityScriptRead(@NotNull Player player, @NotNull Location location, @NotNull ScriptKey scriptKey) {
-        super(player, location, scriptKey);
+    public EntityScriptRead(@NotNull Player player, @NotNull BlockCoords blockCoords, @NotNull ScriptKey scriptKey) {
+        super(player, blockCoords, scriptKey);
     }
 
     @NotNull
@@ -94,8 +95,8 @@ public final class EntityScriptRead extends ScriptRead {
             }
         }
         EndProcessManager.forEach(e -> e.success(this));
-        new PlayerCountJson(sbPlayer).action(PlayerCount::add, location, scriptKey);
-        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(location, scriptKey).console();
+        PlayerCountJson.get(sbPlayer).action(PlayerCount::add, scriptKey, blockCoords);
+        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(scriptKey, blockCoords).console();
         return true;
     }
 }

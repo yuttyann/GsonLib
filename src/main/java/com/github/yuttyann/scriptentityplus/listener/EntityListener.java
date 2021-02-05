@@ -31,7 +31,6 @@ import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.github.yuttyann.scriptentityplus.json.EntityScript;
 import com.github.yuttyann.scriptentityplus.json.EntityScriptJson;
 import com.github.yuttyann.scriptentityplus.script.EntityScriptRead;
-import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -78,7 +77,7 @@ public class EntityListener implements Listener {
     }
 
     private void damageEvent(@NotNull Cancellable event, @NotNull Entity damager, @NotNull Entity entity, final double damage) {
-        EntityScriptJson entityScriptJson = new EntityScriptJson(entity.getUniqueId());
+        EntityScriptJson entityScriptJson = EntityScriptJson.get(entity.getUniqueId());
         if (!entityScriptJson.exists()) {
             return;
         }
@@ -126,7 +125,7 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) {
-            EntityScriptJson scriptJson = new EntityScriptJson(event.getEntity().getUniqueId());
+            EntityScriptJson scriptJson = EntityScriptJson.get(event.getEntity().getUniqueId());
             if (scriptJson.exists()) {
                 scriptJson.deleteFile();
             }
@@ -165,7 +164,7 @@ public class EntityListener implements Listener {
                 }
                 event.setCancelled(true);
             } else {
-                EntityScript entityScript = new EntityScriptJson(entity.getUniqueId()).load();
+                EntityScript entityScript = EntityScriptJson.get(entity.getUniqueId()).load();
                 if (entityScript.getScripts(ToolMode.NORMAL_SCRIPT).size() > 0) {
                     if (!entityScript.isProjectile()) {
                         for (String script : entityScript.getScripts(ToolMode.NORMAL_SCRIPT)) {
@@ -200,11 +199,11 @@ public class EntityListener implements Listener {
     }
 
     private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
-        Location location = BlockCoords.fromString(array[1]);
-        if (!BlockScriptJson.has(location, ScriptKey.valueOf(array[0]))) {
+        BlockCoords blockCoords = BlockCoords.fromString(array[1]);
+        if (!BlockScriptJson.has(ScriptKey.valueOf(array[0]), blockCoords)) {
             return;
         }
-        EntityScriptRead scriptRead = new EntityScriptRead(player, location, ScriptKey.valueOf(array[0]));
+        EntityScriptRead scriptRead = new EntityScriptRead(player, blockCoords, ScriptKey.valueOf(array[0]));
         scriptRead.setEntity(entity);
         scriptRead.put(ScriptAction.KEY, action);
         scriptRead.read(0);
