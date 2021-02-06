@@ -26,11 +26,11 @@ import java.util.UUID;
 @JsonTag(path = "json/entityscript")
 public class EntityScriptJson extends SingleJson<EntityScript> {
 
-	private static final CacheJson<UUID> CACHE_JSON = new CacheJson<>(EntityScriptJson.class, EntityScriptJson::new);
+    private static final CacheJson<UUID> CACHE_JSON = new CacheJson<>(EntityScriptJson.class, EntityScriptJson::new);
 
     protected EntityScriptJson(@NotNull UUID uuid) {
-		super(uuid.toString());
-	}
+        super(uuid.toString());
+    }
 
     @NotNull
     public static EntityScriptJson get(@NotNull UUID uuid) {
