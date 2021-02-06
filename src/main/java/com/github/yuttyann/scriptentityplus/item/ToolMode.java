@@ -41,7 +41,7 @@ public enum ToolMode {
     }
 
     public static boolean isItem(@NotNull ItemStack item) {
-        return ItemUtils.isItem(item, Material.BONE, s -> s.equals("§dScript Connection"));
+        return ItemUtils.compare(item, Material.BONE, s -> s.equals("§dScript Connection"));
     }
 
     @NotNull
