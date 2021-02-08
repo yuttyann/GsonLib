@@ -48,6 +48,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class EntityListener implements Listener {
@@ -105,30 +106,44 @@ public class EntityListener implements Listener {
                     toolMode = ToolMode.DEATH_SCRIPT;
                 }
             }
+            Entity original = entity;
+            Set<String> scripts = info.getScripts(toolMode);
+            if (scripts.isEmpty()) {
+                delete(original);
+                return;
+            }
             try {
                 if (toolMode == ToolMode.DEATH_SCRIPT) {
                     entity = ScriptEntity.getInstance().createArmorStand(entity.getLocation());
                 }
-                if (info.getScripts(toolMode).size() > 0) {
-                    for (String script : info.getScripts(toolMode)) {
-                        read((Player) damager, entity, script.split(Pattern.quote("|")), Action.LEFT_CLICK_AIR);
-                    }
+                for (String script : scripts) {
+                    read((Player) damager, entity, script.split(Pattern.quote("|")), Action.LEFT_CLICK_AIR);
                 }
             } finally {
                 if (toolMode == ToolMode.DEATH_SCRIPT) {
                     entity.remove();
                 }
+                delete(original);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
-            EntityScriptJson scriptJson = EntityScriptJson.get(event.getEntity().getUniqueId());
-            if (scriptJson.exists()) {
-                scriptJson.deleteFile();
-            }
+        delete(event.getEntity());
+    }
+
+    private void delete(@NotNull Entity entity) {
+        if (!entity.isDead()) {
+            return;
+        }
+        EntityType type = entity.getType();
+        if (type == EntityType.PLAYER) {
+            return;
+        }
+        EntityScriptJson scriptJson = EntityScriptJson.get(entity.getUniqueId());
+        if (scriptJson.exists()) {
+            scriptJson.deleteFile();
         }
     }
 

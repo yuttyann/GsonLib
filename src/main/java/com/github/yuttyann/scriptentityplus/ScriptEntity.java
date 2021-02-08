@@ -124,7 +124,6 @@ public class ScriptEntity extends JavaPlugin {
         armorStand.setGravity(false);
         armorStand.setVisible(false);
         armorStand.setSmall(true);
-        armorStand.setSilent(true);
         armorStand.setCustomName("DeathScriptDummy");
         armorStand.setCustomNameVisible(false);
         return armorStand;
