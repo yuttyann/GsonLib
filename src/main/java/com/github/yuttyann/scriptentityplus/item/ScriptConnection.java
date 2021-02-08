@@ -205,7 +205,7 @@ public class ScriptConnection extends ItemAction {
                 builder.add(new JsonElement("Index" + (index++) + "=", ChatColor.WHITE));
 
                 JsonElement element = new JsonElement(scriptKey.toString(), ChatColor.GREEN, ChatFormat.BOLD);
-                String command = "/sbp " + scriptKey.getName() + " run " + StringUtils.replace(array[1], ",", "");
+                String command = "/sbp " + scriptKey.getName() + " run " + removeBrank(array[1]).replace(',', ' ');
                 element.setClickEvent(ClickEventType.SUGGEST_COMMAND, command);
                 element.setHoverEvent(HoverEventType.SHOW_TEXT, getTexts(scriptKey, BlockCoords.fromString(array[1])));
                 builder.add(element);
@@ -214,6 +214,11 @@ public class ScriptConnection extends ItemAction {
             }
             sbPlayer.sendMessage("---------------------");
         }
+    }
+
+    @NotNull
+    private String removeBrank(@NotNull String source) {
+        return org.apache.commons.lang.StringUtils.remove(source, ' ');
     }
 
     private void setButton(@NotNull JsonBuilder builder, @NotNull String name, @NotNull String uuid) {

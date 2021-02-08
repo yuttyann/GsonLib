@@ -32,14 +32,14 @@ public class EntityScriptJson extends SingleJson<EntityScript> {
         super(uuid.toString());
     }
 
-    @NotNull
-    public static EntityScriptJson get(@NotNull UUID uuid) {
-        return newJson(uuid, CACHE_JSON);
-    }
-
     @Override
     @NotNull
     protected EntityScript newInstance() {
         return new EntityScript();
+    }
+
+    @NotNull
+    public static EntityScriptJson get(@NotNull UUID uuid) {
+        return newJson(uuid, CACHE_JSON);
     }
 }
