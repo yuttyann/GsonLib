@@ -17,11 +17,14 @@ package com.github.yuttyann.scriptentityplus;
 
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.Updater;
+import com.github.yuttyann.scriptblockplus.enums.CommandLog;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
+import com.github.yuttyann.scriptblockplus.file.json.CacheJson;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
 import com.github.yuttyann.scriptentityplus.file.SEFiles;
 import com.github.yuttyann.scriptentityplus.item.ScriptConnection;
+import com.github.yuttyann.scriptentityplus.json.EntityScriptJson;
 import com.github.yuttyann.scriptentityplus.listener.EntityListener;
 import com.github.yuttyann.scriptentityplus.listener.PlayerListener;
 
@@ -54,6 +57,10 @@ public class ScriptEntity extends JavaPlugin {
                 
                 // 全ファイルの読み込み
                 SEFiles.reload();
+
+                // キャッシュの生成
+                EntityScriptJson.CACHE_JSON.setLoader();
+                CacheJson.loading(EntityScriptJson.class);
 
                 // リスナーの登録
                 manager.registerEvents(new PlayerListener(), this);
@@ -134,7 +141,7 @@ public class ScriptEntity extends JavaPlugin {
         return getPlugin(ScriptEntity.class);
     }
 
-    public static void dispatchCommand(String command) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+    public static void dispatchCommand(@NotNull World world, @NotNull String command) {
+        CommandLog.action(world, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
     }
 }

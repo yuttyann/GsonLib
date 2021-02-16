@@ -20,6 +20,7 @@ import com.github.yuttyann.scriptblockplus.event.FileReloadEvent;
 import com.github.yuttyann.scriptblockplus.file.SBFile;
 import com.github.yuttyann.scriptblockplus.file.config.ConfigKeys;
 import com.github.yuttyann.scriptblockplus.script.option.BaseOption;
+import com.github.yuttyann.scriptblockplus.utils.FileUtils;
 import com.github.yuttyann.scriptentityplus.ScriptEntity;
 import com.github.yuttyann.scriptentityplus.script.EntityScriptRead;
 
@@ -55,7 +56,7 @@ public class SEFiles implements Listener {
         File dataFolder = ScriptBlock.getInstance().getDataFolder();
         File scriptEntity = new SBFile(dataFolder, "json/scriptentity");
         if (scriptEntity.exists() && scriptEntity.isDirectory()) {
-            scriptEntity.renameTo(new SBFile(dataFolder, "json/entityscript"));
+            FileUtils.move(scriptEntity, new SBFile(dataFolder, "json/entityscript"));
         }
     }
 

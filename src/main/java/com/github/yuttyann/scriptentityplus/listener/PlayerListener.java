@@ -76,7 +76,7 @@ public class PlayerListener implements Listener {
             EntityScriptJson entityScriptJson = EntityScriptJson.get(UUID.fromString(array[1]));
             if (entityScriptJson.exists()) {
                 setting(player, array, entityScriptJson.load());
-                entityScriptJson.saveFile();
+                entityScriptJson.saveJson();
             }
             event.setCancelled(true);
         }

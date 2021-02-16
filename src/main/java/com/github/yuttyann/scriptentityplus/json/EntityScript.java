@@ -15,15 +15,15 @@
  */
 package com.github.yuttyann.scriptentityplus.json;
 
-import com.github.yuttyann.scriptblockplus.file.json.BaseElement;
 import com.github.yuttyann.scriptblockplus.file.json.annotation.Alternate;
+import com.github.yuttyann.scriptblockplus.file.json.basic.SingleJson.SingleElement;
 import com.github.yuttyann.scriptentityplus.item.ToolMode;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class EntityScript extends BaseElement {
+public class EntityScript extends SingleElement {
 
     @Alternate("scripts")
     @SerializedName(value = "normalscripts", alternate = { "scripts" })

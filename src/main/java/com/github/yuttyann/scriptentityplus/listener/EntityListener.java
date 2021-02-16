@@ -215,7 +215,7 @@ public class EntityListener implements Listener {
 
     private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
         BlockCoords blockCoords = BlockCoords.fromString(array[1]);
-        if (!BlockScriptJson.has(ScriptKey.valueOf(array[0]), blockCoords)) {
+        if (!BlockScriptJson.contains(ScriptKey.valueOf(array[0]), blockCoords)) {
             return;
         }
         EntityScriptRead scriptRead = new EntityScriptRead(player, blockCoords, ScriptKey.valueOf(array[0]));

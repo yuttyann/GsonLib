@@ -18,7 +18,7 @@ package com.github.yuttyann.scriptentityplus.item;
 import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.file.json.derived.BlockScriptJson;
-import com.github.yuttyann.scriptblockplus.file.json.element.ScriptParam;
+import com.github.yuttyann.scriptblockplus.file.json.element.BlockScript;
 import com.github.yuttyann.scriptblockplus.item.ChangeSlot;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.item.RunItem;
@@ -104,7 +104,7 @@ public class ScriptConnection extends ItemAction {
             JsonBuilder builder = new JsonBuilder();
             builder.add(new JsonElement("ScriptKeys: ", ChatColor.GOLD, ChatFormat.BOLD));
             for (ScriptKey scriptKey : ScriptKey.values()) {
-                if (BlockScriptJson.has(scriptKey, blockCoords)) {
+                if (BlockScriptJson.contains(scriptKey, blockCoords)) {
                     String chat = scriptKey.toString() + "|" + fullCoords + "/" + PlayerListener.KEY_TOOL;
                     JsonElement element = new JsonElement(scriptKey.toString(), ChatColor.GREEN, ChatFormat.BOLD);
                     element.setClickEvent(ClickEventType.RUN_COMMAND, chat);
@@ -117,7 +117,7 @@ public class ScriptConnection extends ItemAction {
                     builder.add(new JsonElement(", ", ChatColor.GRAY));
                 }
             }
-            ScriptEntity.dispatchCommand("tellraw " + sbPlayer.getName() + " " + builder.toJson());
+            ScriptEntity.dispatchCommand(sbPlayer.getWorld(), "tellraw " + sbPlayer.getName() + " " + builder.toJson());
         } else {
             sbPlayer.getObjectMap().put(KEY, toolMode = ToolMode.getNextMode(toolMode));
             ActionBar.send(sbPlayer, "§6§lToolMode: §b§l" + toolMode.getMode());
@@ -149,13 +149,13 @@ public class ScriptConnection extends ItemAction {
                 String[] array = script.split(Pattern.quote("|"));
                 ScriptKey scriptKey = ScriptKey.valueOf(array[0]);
                 BlockCoords blockCoords = BlockCoords.fromString(array[1]);
-                if (BlockScriptJson.has(scriptKey, blockCoords)) {
+                if (BlockScriptJson.contains(scriptKey, blockCoords)) {
                     entityScript.getScripts(toolMode).add(script);
                 }
             }
             entityScript.setInvincible(true);
             try {
-                entityScriptJson.saveFile();
+                entityScriptJson.saveJson();
             } finally {
                 objectMap.remove(PlayerListener.KEY_SCRIPT);
             }
@@ -189,7 +189,7 @@ public class ScriptConnection extends ItemAction {
             setButton(builder, "Projectile", uuid);
 
             sbPlayer.sendMessage("--------- [ Entity Settings ] ---------");
-            ScriptEntity.dispatchCommand("tellraw " + sbPlayer.getName() + " " + builder.toJson());
+            ScriptEntity.dispatchCommand(sbPlayer.getWorld(), "minecraft:tellraw " + sbPlayer.getName() + " " + builder.toJson());
             sbPlayer.sendMessage("------------------------------------");
         } else {
             if (entityScript.getScripts(toolMode).size() < 1) {
@@ -210,7 +210,7 @@ public class ScriptConnection extends ItemAction {
                 element.setHoverEvent(HoverEventType.SHOW_TEXT, getTexts(scriptKey, BlockCoords.fromString(array[1])));
                 builder.add(element);
 
-                ScriptEntity.dispatchCommand("tellraw " + sbPlayer.getName() + " " + builder.toJson());
+                ScriptEntity.dispatchCommand(sbPlayer.getWorld(), "minecraft:tellraw " + sbPlayer.getName() + " " + builder.toJson());
             }
             sbPlayer.sendMessage("---------------------");
         }
@@ -249,15 +249,15 @@ public class ScriptConnection extends ItemAction {
 
     @NotNull
     private String getTexts(@NotNull ScriptKey scriptKey, @NotNull BlockCoords blockCoords) {
-        if (!BlockScriptJson.has(scriptKey, blockCoords)) {
+        if (!BlockScriptJson.contains(scriptKey, blockCoords)) {
             return "null";
         }
-        ScriptParam scriptParam = BlockScriptJson.get(scriptKey).load().get(blockCoords);
-        String selector = scriptParam.getSelector();
+        BlockScript blockScript = BlockScriptJson.get(scriptKey).load(blockCoords);
+        String selector = blockScript.getSelector();
         StringBuilder builder = new StringBuilder();
         StringJoiner joiner = new StringJoiner("\n§6- §b");
-        scriptParam.getScript().forEach(joiner::add);
-        Stream<String> author = scriptParam.getAuthor().stream().map(Utils::getName);
+        blockScript.getScripts().forEach(joiner::add);
+        Stream<String> author = blockScript.getAuthors().stream().map(Utils::getName);
         builder.append("§eAuthor: §a").append(author.collect(Collectors.joining(", ")));
         builder.append("\n§eCoords: §a").append(blockCoords.getFullCoords());
         builder.append("\n§eRedstone: §").append(selector == null ? "cfalse" : "atrue §d: §a" + selector);
