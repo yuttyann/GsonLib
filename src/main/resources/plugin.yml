@@ -5,6 +5,7 @@ api-version: 1.13
 description: ${project.description}
 author: yuttyann44581
 website: https://github.com/yuttyann/ScriptEntityPlus
+depend: [ScriptBlockPlus]
 softdepend: [ScriptEntity, ScriptBlock, ScriptBlockPlus, Vault]
 
 permissions:
