@@ -1,1 +1,1 @@
-# GsonLib
+# GsonLib [Java11](https://adoptopenjdk.net/?variant=openjdk11) [![](https://jitpack.io/v/yuttyann/GsonLib.svg)]
