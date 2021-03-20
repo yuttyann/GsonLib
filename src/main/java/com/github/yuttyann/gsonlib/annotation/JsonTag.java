@@ -33,8 +33,6 @@ public @interface JsonTag {
 
     /**
      * 整形を許可する要素数の上限を取得します。
-     * <p>
-     * 
      * @return {@link int} - 上限値
      */
     @NotNull
@@ -43,15 +41,15 @@ public @interface JsonTag {
     /**
      * インデントを取得します。
      * <p>
-     * 整形を行った際のスペースの量です。
+     * 整形を行う際に利用されます。
      * @return {@link String} - インデント
      */
     @NotNull
     String indent() default "  ";
 
     /**
-     * ファイルが存在する時のみキャッシュを保存するのかどうか。
-     * @return {@link boolean} - ファイルが存在する時のみキャッシュを保存する場合は{@code true}
+     * ファイルを保存した時にキャッシュを削除するのかどうか。
+     * @return {@link boolean} - 削除を行う場合は{@code true}
      */
     boolean temporary() default false;
 

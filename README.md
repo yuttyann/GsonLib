@@ -1,4 +1,4 @@
-# GsonLib [Java11](https://adoptopenjdk.net/?variant=openjdk11) [![](https://jitpack.io/v/yuttyann/GsonLib.svg)]
+# GsonLib [Java11](https://adoptopenjdk.net/?variant=openjdk11) [![](https://jitpack.io/v/yuttyann/GsonLib.svg)](https://jitpack.io/#yuttyann/GsonLib)
 
 # 概要
 [ScriptBlockPlus](https://github.com/yuttyann/ScriptBlockPlus)で利用している、自作ライブラリの単品化を行いました。  
@@ -103,7 +103,20 @@ gsonHolder.builder(gsonBuilder -> gsonBuilder.registerTypeAdapter(クラス, ア
 
 **実装方法**
 ```java
-@JsonTag(....)
+// 整形を許可する要素の上限数
+@JsonTag(limit = 10000)
+
+// 整形時のインデント
+@JsonTag(indent = "   ")
+
+// ファイルを保存した時にキャッシュを削除するのかどうか
+@JsonTag(temporary = true)
+
+// ファイルが存在する時のみキャッシュを保存するのかどうか
+@JsonTag(cachefileexists = false)
+
+
+@JsonTag(...)
 public class ExampleJson extends SingleJson<Example> {
     ........
 }
