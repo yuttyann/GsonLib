@@ -446,7 +446,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
 
     /**
      * ハッシュコードを生成します。
-     * @param hash - ハッシュコード
+     * @param hashCode - ハッシュコード
      * @param jsonClass - JSONのクラス
      * @return {@link int} - ハッシュコード
      */
