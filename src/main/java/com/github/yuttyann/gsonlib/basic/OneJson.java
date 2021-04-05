@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class OneJson<A, E extends OneJson.OneElement<A>> extends BaseJson<E> {
 
     /**
-     * GsonLib TwoElement クラス
+     * GsonLib OneElement クラス
      * @param <A> 引数の型
      * @author yuttyann44581
      */
