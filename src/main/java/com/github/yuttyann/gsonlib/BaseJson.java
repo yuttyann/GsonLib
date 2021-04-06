@@ -211,7 +211,6 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * 要素の再読み込みを行います。
      */
     public final void reload() {
-        Objects.requireNonNull(file, "Please load the file");
         try {
             setMap(loadJson());
         } catch (IOException | ClassNotFoundException e) {
@@ -412,10 +411,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      */
     @NotNull
     private CollectionType getCollectionType() throws ClassNotFoundException {
-        if (collectionType == null) {
-            this.collectionType = new CollectionType(Collection.class, this);
-        }
-        return collectionType;
+        return collectionType == null ? this.collectionType = new CollectionType(Collection.class, this) : collectionType;
     }
 
     /**
@@ -473,5 +469,16 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
         }
         var baseJson = (BaseJson<?>) obj;
         return Objects.equals(name, baseJson.name) && Objects.equals(file, baseJson.file);
+    }
+
+    @Override
+    @NotNull
+    public String toString() {
+        try {
+            return GSON_HOLDER.getGson().toJson(copyElements(), getCollectionType());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "[]";
     }
 }
