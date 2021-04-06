@@ -19,7 +19,7 @@
   <dependency>
     <groupId>com.github.yuttyann</groupId>
     <artifactId>GsonLib</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </dependency>
 ```
 ### Gradle
@@ -32,7 +32,7 @@
 　}
 
 　dependencies {
-　　　implementation 'com.github.yuttyann:GsonLib:1.0.0'
+　　　implementation 'com.github.yuttyann:GsonLib:1.0.1'
 　}
 ```
 
