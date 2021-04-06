@@ -131,6 +131,24 @@ public class ExampleJson extends SingleJson<Example> {
 }
 ```
 
+## Excludeの解説
+[Exclude](https://github.com/yuttyann/GsonLib/blob/main/src/main/java/com/github/yuttyann/gsonlib/annotation/Exclude.java)は、上記と同じ`注釈`です。  
+デシリアライズ化を行う際に、この注釈を付与したフィールドをスルーすることができます。  
+
+**実装方法**
+```java
+public class Example extends SingleElement {
+
+    @SerializedName("flag")
+    private boolean flag1;
+
+    @Exclude
+    private boolean flag2;
+
+    ........
+}
+```
+
 ## クラスの作成
 基本的には、要素の内容が保存されます。  
 また、Jsonの管理はxxxJsonを継承したクラスで行います。  
