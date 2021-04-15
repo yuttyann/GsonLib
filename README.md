@@ -239,7 +239,7 @@ public class Example extends SingleElement {
 ```java
 // Json
 @JsonTag
-public class ExampleJson extends TwoJson<Test1, Test2, Example> {
+public class ExampleJson extends TwoJson<Integer, Integer, Example> {
 
     /**
      * コンストラクタ
@@ -255,35 +255,69 @@ public class ExampleJson extends TwoJson<Test1, Test2, Example> {
      * @return Example - インスタンス
      */
     @Override
-    protected Example newInstance(Test1 test1, Test2 test2) {
-        return new Example(test1, test2);
+    protected Example newInstance(Integer x, Integer y) {
+        return new Example(x, y);
     }
 }
 
 // Element
-public class Example extends TwoElement<Test1, Test2> {
+public class Example extends TwoElement<Integer, Integer> {
 
-    @SerializedName("test1")
-    private final Test1 test1;
+    @SerializedName("x")
+    private final Integer x;
 
-    @SerializedName("test2")
-    private final Test2 test2;
+    @SerializedName("y")
+    private final Integer y;
 
-    public Example(Test1 test1, Test2 test2) {
-        this.test1 = test1;
-        this.test2 = test2;
+    @SerializedName("option")
+    private int value;
+
+    public Example(Integer x, Integer y) {
+        this.x = x;
+        this.y = y;
     }
 
     // 必ずコンストラクタの引数1を返す
     @Override
-    protected Test1 getA() {
-        return test1;
+    protected Integer getA() {
+        return x;
     }
 
     // 必ずコンストラクタの引数2を返す
     @Override
-    protected Test2 getB() {
-        return test2;
+    protected Integer getB() {
+        return y;
+    }
+
+    // 任意のメソッド
+    public void setOption(int value) {
+        this.value = value;
+    }
+
+    public int getOption() {
+        return value;
     }
 }
+```
+
+**使用例**  
+上記に記述したクラスを実際に使ってみましょう。
+```java
+// filesフォルダの内部に生成する。
+File jsonFile = new File("files/example.json");
+
+// ExampleJson を生成する。
+ExampleJson json = new ExampleJson(jsonFile);
+
+// 要素に、任意の値を設定する。
+json.load(1, 2).setOption(100); // x:1,y:2を指定 値を100に設定
+json.load(1, 2).setOption(50);  // x:1,y:2を指定 値を50に設定
+json.load(0, 1).setOption(100); // x:0,y:1を指定 値を100に設定
+
+// Jsonの保存を行う。
+json.saveJson();
+
+// 結果表示
+System.out.println("toString: " + json.toString());
+// toString: [{"x":1,"y":2,"option":50},{"x":0,"y":1,"option":100}]
 ```
