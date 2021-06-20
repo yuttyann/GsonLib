@@ -72,17 +72,14 @@ public final class EntityScriptRead extends ScriptRead {
     @Override
     @NotNull
     public final Location getLocation() {
-        if (FILTERS.contains(option.getClass())) {
-            return entityLocation;
-        }
-        return super.getLocation();
+        return FILTERS.contains(option.getClass()) ? entityLocation :super.getLocation();
     }
 
     @Override
     protected boolean perform(final int index) {
         for (this.index = index; this.index < scripts.size(); this.index++) {
             String script = scripts.get(this.index);
-            Option option = OptionManager.newInstance(script);
+            this.option = OptionManager.newInstance(script);
             this.value = Placeholder.INSTANCE.replace(getPlayer(), option.getValue(script));
             if (!option.callOption(this) && isFailedIgnore(option)) {
                 return false;
