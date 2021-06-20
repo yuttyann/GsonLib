@@ -1,5 +1,5 @@
 name: ${project.name}
-main: com.github.yuttyann.scriptentityplus.ScriptEntity
+main: ${project.groupId}.scriptentityplus.ScriptEntity
 version: ${project.version}
 api-version: 1.13
 description: ${project.description}

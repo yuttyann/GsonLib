@@ -17,8 +17,6 @@ package com.github.yuttyann.scriptentityplus.script;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
 import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
-import com.github.yuttyann.scriptblockplus.file.json.derived.PlayerCountJson;
-import com.github.yuttyann.scriptblockplus.file.json.element.PlayerCount;
 import com.github.yuttyann.scriptblockplus.hook.plugin.Placeholder;
 import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
 import com.github.yuttyann.scriptblockplus.manager.OptionManager;
@@ -83,19 +81,14 @@ public final class EntityScriptRead extends ScriptRead {
     @Override
     protected boolean perform(final int index) {
         for (this.index = index; this.index < scripts.size(); this.index++) {
-            if (!sbPlayer.isOnline() || entity.isDead()) {
-                EndProcessManager.forEach(e -> e.failed(this));
-                return false;
-            }
             String script = scripts.get(this.index);
-            this.option = OptionManager.newInstance(script);
+            Option option = OptionManager.newInstance(script);
             this.value = Placeholder.INSTANCE.replace(getPlayer(), option.getValue(script));
             if (!option.callOption(this) && isFailedIgnore(option)) {
                 return false;
             }
         }
         EndProcessManager.forEach(e -> e.success(this));
-        PlayerCountJson.get(sbPlayer).action(PlayerCount::add, scriptKey, blockCoords);
         SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(scriptKey, blockCoords).console();
         return true;
     }

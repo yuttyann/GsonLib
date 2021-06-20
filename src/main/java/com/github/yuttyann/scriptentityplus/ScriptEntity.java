@@ -18,7 +18,6 @@ package com.github.yuttyann.scriptentityplus;
 import com.github.yuttyann.scriptblockplus.ScriptBlock;
 import com.github.yuttyann.scriptblockplus.Updater;
 import com.github.yuttyann.scriptblockplus.enums.CommandLog;
-import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
 import com.github.yuttyann.scriptblockplus.file.json.CacheJson;
 import com.github.yuttyann.scriptblockplus.item.ItemAction;
 import com.github.yuttyann.scriptblockplus.utils.Utils;
@@ -43,7 +42,7 @@ import java.util.Objects;
 
 public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.1.0";
+    public static final String SBP_VERSION = "2.1.2";
 
     private Updater updater;
 
@@ -87,28 +86,7 @@ public class ScriptEntity extends JavaPlugin {
     }
 
     public void checkUpdate(@NotNull CommandSender sender, boolean latestMessage) {
-        if (updater == null) {
-            updater = new Updater(this);
-        }
-        Thread thread = new Thread(() -> {
-            try {
-                updater.load();
-                if (!updater.run(sender) && latestMessage) {
-                    SBConfig.NOT_LATEST_PLUGIN.send(sender);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                SBConfig.ERROR_UPDATE.send(sender);
-            }
-        });
-        try {
-            thread.setName("Update Thread : " + Utils.getPluginName(this));
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.start();
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ScriptBlock.getInstance().checkUpdate(sender, updater == null ? updater = new Updater(this) : updater, latestMessage);
     }
 
     public boolean removeArmorStand(@NotNull Entity entity) {

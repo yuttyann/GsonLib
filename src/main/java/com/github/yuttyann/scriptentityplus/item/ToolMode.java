@@ -15,6 +15,7 @@
  */
 package com.github.yuttyann.scriptentityplus.item;
 
+import com.github.yuttyann.scriptblockplus.enums.MatchType;
 import com.github.yuttyann.scriptblockplus.utils.ItemUtils;
 import com.github.yuttyann.scriptblockplus.utils.StringUtils;
 import com.github.yuttyann.scriptentityplus.file.SEConfig;
@@ -41,7 +42,7 @@ public enum ToolMode {
     }
 
     public static boolean isItem(@NotNull ItemStack item) {
-        return ItemUtils.compare(item, Material.BONE, s -> s.equals("§dScript Connection"));
+        return ItemUtils.compare(MatchType.TYPE, item, Material.BONE) && ItemUtils.compare(MatchType.NAME, item, "§dScript Connection");
     }
 
     @NotNull
