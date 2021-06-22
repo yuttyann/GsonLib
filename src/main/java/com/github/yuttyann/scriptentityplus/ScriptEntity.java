@@ -44,8 +44,6 @@ public class ScriptEntity extends JavaPlugin {
 
     public static final String SBP_VERSION = "2.1.2";
 
-    private Updater updater;
-
     @Override
     public void onEnable() {
         PluginManager manager = getServer().getPluginManager();
@@ -86,7 +84,7 @@ public class ScriptEntity extends JavaPlugin {
     }
 
     public void checkUpdate(@NotNull CommandSender sender, boolean latestMessage) {
-        ScriptBlock.getInstance().checkUpdate(sender, updater == null ? updater = new Updater(this) : updater, latestMessage);
+        ScriptBlock.getInstance().checkUpdate(sender, new Updater(this), latestMessage);
     }
 
     public boolean removeArmorStand(@NotNull Entity entity) {
