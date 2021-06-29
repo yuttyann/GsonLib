@@ -76,7 +76,7 @@ public final class CacheJson {
      * @return {@link BaseJson} - インスタンス
      */
     @NotNull
-    synchronized BaseJson<?> newInstance(@NotNull File file) {
+    BaseJson<?> newInstance(@NotNull File file) {
         try {
             return (BaseJson<?>) constructor.newInstance(file);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
