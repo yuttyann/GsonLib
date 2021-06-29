@@ -168,7 +168,6 @@ Json &lt;[PlayerCountJson.java](https://github.com/yuttyann/ScriptBlockPlus/blob
 
 **キャッシュの実装**  
 クラスの詳細 &lt;[CacheJson.java](https://github.com/yuttyann/GsonLib/blob/main/src/main/java/com/github/yuttyann/gsonlib/CacheJson.java)&gt;  
-Jsonクラスにフィールドとメソッドを追加することで、キャッシュを行うことが可能になります。  
 `(基本的に実装方法は変わらないため、SingleJsonを利用している場合を前提に話を進めます。)`
 ```java
 @JsonTag(...)
