@@ -72,11 +72,11 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
 
     public static final GsonHolder GSON_HOLDER = new GsonHolder(new GsonBuilder());
 
-    private static final IntObjectMap<BaseJson<?>> Json_CACHE = new IntObjectHashMap<>();
+    private static final IntObjectMap<BaseJson<?>> JSON_CACHE = new IntObjectHashMap<>();
 
     private final File file;
     private final String name;
-    private final JsonTag JsonTag;
+    private final JsonTag jsonTag;
 
     private int id;
     private File parent;
@@ -99,11 +99,11 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * @param file - ファイル
      */
     protected BaseJson(@NotNull File file) {
-        if ((this.JsonTag = getClass().getAnnotation(JsonTag.class)) == null) {
+        if ((this.jsonTag = getClass().getAnnotation(JsonTag.class)) == null) {
             throw new NullPointerException("Annotation not found @JsonTag()");
         }
         var path = file.getPath();
-        if (!path.endsWith(".Json")) {
+        if (!path.endsWith(".json")) {
             throw new IllegalArgumentException("File: " + path);
         }
         this.file = file;
@@ -125,23 +125,23 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * <p>
      * また、キャッシュを利用する場合は基本的に"private"なコンストラクタの実装を推奨します。
      * @param <T> - Jsonの型
-     * @param Json - Jsonのクラス
+     * @param json - Jsonのクラス
      * @param file - ファイル
      * @return {@link BaseJson} - インスタンス
      */
     @NotNull
-    public static <T extends BaseJson<?>> T newJson(@NotNull Class<T> Json, @NotNull File file) {
-        var hash = hash(Json, file.hashCode());
-        var baseJson = Json_CACHE.get(hash);
+    public static <T extends BaseJson<?>> T newJson(@NotNull Class<T> json, @NotNull File file) {
+        var hash = hash(json, file.hashCode());
+        var baseJson = JSON_CACHE.get(hash);
         if (baseJson == null) {
-            var cacheJson = CacheJson.CACHE_MAP.get(Json);
+            var cacheJson = CacheJson.CACHE_MAP.get(json);
             baseJson = cacheJson.newInstance(file);
-            if (baseJson.JsonTag.cachefileexists() && !baseJson.exists()) {
+            if (baseJson.jsonTag.cachefileexists() && !baseJson.exists()) {
                 return (T) baseJson;
             }
             baseJson.keepCache();
             baseJson.setCacheId(hash);
-            Json_CACHE.put(hash, baseJson);
+            JSON_CACHE.put(hash, baseJson);
         }
         return (T) baseJson;
     }
@@ -153,15 +153,15 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * <p>
      * また、キャッシュを利用する場合は基本的に"private"なコンストラクタの実装を推奨します。
      * @param <T> Jsonの型
-     * @param Json - Jsonのクラス
+     * @param json - Jsonのクラス
      * @param file - ファイル
      * @return {@link BaseJson} - インスタンス
      */
     @NotNull
-    public static <T extends BaseJson<?>> T getCache(@NotNull Class<T> Json, @NotNull File file) {
-        var baseJson = Json_CACHE.get(hash(Json, file.hashCode()));
+    public static <T extends BaseJson<?>> T getCache(@NotNull Class<T> json, @NotNull File file) {
+        var baseJson = JSON_CACHE.get(hash(json, file.hashCode()));
         if (baseJson == null) {
-            baseJson = CacheJson.CACHE_MAP.get(Json).newInstance(file);
+            baseJson = CacheJson.CACHE_MAP.get(json).newInstance(file);
         }
         return (T) baseJson;
     }
@@ -170,19 +170,19 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * キャッシュされた全ての要素を削除します。
      */
     public static void clear() {
-        Json_CACHE.entries().forEach(e -> e.value().clearCache());
-        Json_CACHE.clear();
+        JSON_CACHE.entries().forEach(e -> e.value().clearCache());
+        JSON_CACHE.clear();
     }
 
     /**
      * キャッシュされた全ての要素を削除します。
-     * @param Json - Jsonのクラス 
+     * @param json - Jsonのクラス 
      */
-    public static final void clear(@NotNull Class<? extends BaseJson<?>> Json) {
-        var iterator = Json_CACHE.entries().iterator();
+    public static final void clear(@NotNull Class<? extends BaseJson<?>> json) {
+        var iterator = JSON_CACHE.entries().iterator();
         while (iterator.hasNext()) {
             var value = iterator.next().value();
-            if (value.getClass().equals(Json)) {
+            if (value.getClass().equals(json)) {
                 value.clearCache();
                 iterator.remove();
             }
@@ -332,7 +332,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
         try {
             if (getStatus() == Status.KEEP_CACHE) {
                 clearCache();
-                Json_CACHE.remove(getCacheId());
+                JSON_CACHE.remove(getCacheId());
             }
         } finally {
             file.delete();
@@ -350,16 +350,16 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
         }
         var elements = copyElements();
         try (var writer = new JsonWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8)))) {
-            if (elementMap.size() < JsonTag.limit()) {
-                writer.setIndent(JsonTag.indent());
+            if (elementMap.size() < jsonTag.limit()) {
+                writer.setIndent(jsonTag.indent());
             }
             GSON_HOLDER.getGson().toJson(elements, getCollectionType(), writer);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
-            if (JsonTag.temporary() && getStatus() == Status.KEEP_CACHE) {
+            if (jsonTag.temporary() && getStatus() == Status.KEEP_CACHE) {
                 clearCache();
-                Json_CACHE.remove(getCacheId());
+                JSON_CACHE.remove(getCacheId());
             }
         }
     }
@@ -444,14 +444,14 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
     /**
      * ハッシュコードを生成します。
      * @param hashCode - ハッシュコード
-     * @param Json - Jsonのクラス
+     * @param json - Jsonのクラス
      * @return {@link int} - ハッシュコード
      */
-    private static int hash(@NotNull Class<?> Json, @NotNull int hashCode) {
+    private static int hash(@NotNull Class<?> json, @NotNull int hashCode) {
         int hash = 1;
         int prime = 31;
         hash = prime * hash + hashCode;
-        hash = prime * hash + Json.hashCode();
+        hash = prime * hash + json.hashCode();
         return hash;
     }
 
