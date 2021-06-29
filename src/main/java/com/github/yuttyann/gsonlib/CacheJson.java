@@ -16,7 +16,11 @@
 package com.github.yuttyann.gsonlib;
 
 import java.io.File;
-import java.util.function.Function;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,35 +30,58 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class CacheJson {
 
-    private final Class<? extends BaseJson<?>> jsonClass;
-    private final Function<File, ? extends BaseJson<?>> newInstance;
+    static final Map<Class<? extends BaseJson<?>>, CacheJson> CACHE_MAP = new HashMap<>();
+
+    private final Class<? extends BaseJson<?>> json;
+    private final Constructor<?> constructor;
 
     /**
      * コンストラクタ
-     * @param jsonClass - JSONのクラス
-     * @param newInstance - インスタンスの生成処理
+     * @param json - Jsonのクラス
      */
-    public CacheJson(@NotNull Class<? extends BaseJson<?>> jsonClass, @NotNull Function<File, ? extends BaseJson<?>> newInstance) {
-        this.jsonClass = jsonClass;
-        this.newInstance = newInstance;
+    private CacheJson(@NotNull Class<? extends BaseJson<?>> json) {
+        this.json = json;
+
+        var constructor = (Constructor<?>) null;
+        try {
+            constructor = json.getDeclaredConstructor(File.class);
+            constructor.setAccessible(true);
+        } catch (SecurityException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        this.constructor = Objects.requireNonNull(constructor);
     }
 
     /**
-     * JSONのクラスを取得します。
-     * @return {@link Class}&lt;? extends {@link BaseJson}&gt; - JSONのクラス
+     * キャッシュを登録します。
+     * @param json - Jsonのクラス
+     */
+    public static void register(@NotNull Class<? extends BaseJson<?>> json) {
+        CACHE_MAP.put(json, new CacheJson(json));
+    }
+
+    /**
+     * Jsonのクラスを取得します。
+     * @return {@link Class}&lt;? extends {@link BaseJson}&gt; - Jsonのクラス
      */
     @NotNull
     public Class<? extends BaseJson<?>> getJsonClass() {
-        return jsonClass;
+        return json;
     }
 
     /**
      * インスタンスを生成します。
+     * @throws IllegalArgumentException インスタンスの生成に失敗した際にスローされます。
      * @param file - ファイル
      * @return {@link BaseJson} - インスタンス
      */
     @NotNull
-    BaseJson<?> newInstance(@NotNull File file) {
-        return newInstance.apply(file);
+    synchronized BaseJson<?> newInstance(@NotNull File file) {
+        try {
+            return (BaseJson<?>) constructor.newInstance(file);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        throw new IllegalArgumentException();
     }
 }

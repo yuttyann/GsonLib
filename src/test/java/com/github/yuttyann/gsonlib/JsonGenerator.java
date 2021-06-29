@@ -36,7 +36,7 @@ public class JsonGenerator {
 
     {
         var current = System.getProperty("user.dir");
-        this.json = new ExampleJson(new File(current + "/debug-json/test.json"));
+        this.json = ExampleJson.newJson(new File(current + "/debug-json/test.json"));
     }
 
     @NotNull
@@ -59,10 +59,18 @@ public class JsonGenerator {
     public enum Status { ON, OFF; }
 
     @JsonTag
-    public class ExampleJson extends TwoJson<String, Status, ExampleElement> {
+    public static class ExampleJson extends TwoJson<String, Status, ExampleElement> {
 
-        public ExampleJson(@NotNull File file) {
+        static {
+            CacheJson.register(ExampleJson.class);
+        }
+
+        private ExampleJson(@NotNull File file) {
             super(file);
+        }
+
+        public static ExampleJson newJson(@NotNull File file) {
+            return newJson(ExampleJson.class, file);
         }
 
         @Override
@@ -72,7 +80,7 @@ public class JsonGenerator {
         }
     }
 
-    public class ExampleElement extends TwoElement<String, Status> {
+    public static class ExampleElement extends TwoElement<String, Status> {
 
         @SerializedName("password")
         private final String password;

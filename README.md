@@ -6,6 +6,14 @@
 基礎となるJsonクラス、Elementクラスを実装することで簡単にJsonを実装することが可能です。  
 **(内部的に[Gson](https://github.com/google/gson)を利用しているため、仕様等に関しては各自調べてください。)**
 
+# 使用ライブラリ
+| Name | Description | Version |
+|:---|:---|:---:|
+| [Gson](https://github.com/google/gson) | Jsonを扱うメインのライブラリです。 | **2.8.6** |
+| [Guava](https://github.com/google/guava) | Multimapを利用しています。 | **30.0-jre** |
+| [Netty](https://github.com/netty/netty) | 高速化のためIntMapを利用しています。 | **4.1.50.Final** |
+| [Junit](https://github.com/junit-team/junit4) | デバッグを行うために利用しています。 | **4.13.1** |
+
 ## プロジェクトへの追加 [![](https://jitpack.io/v/yuttyann/GsonLib.svg)](https://jitpack.io/#yuttyann/GsonLib)
 ### Maven
 ```xml
@@ -19,7 +27,7 @@
   <dependency>
     <groupId>com.github.yuttyann</groupId>
     <artifactId>GsonLib</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </dependency>
 ```
 ### Gradle
@@ -32,7 +40,7 @@
 　}
 
 　dependencies {
-　　　implementation 'com.github.yuttyann:GsonLib:1.0.1'
+　　　implementation 'com.github.yuttyann:GsonLib:1.0.2'
 　}
 ```
 
@@ -167,7 +175,9 @@ Jsonクラスにフィールドとメソッドを追加することで、キャ�
 public class ExampleJson extends SingleJson<Example> {
 
     // キャッシュを行う場合は、必ず実装する
-    public static final CacheJson CACHE_JSON = new CacheJson(ExampleJson.class, ExampleJson::new);
+    static {
+        CacheJson.register(ExampleJson.class);
+    }
 
     // 安全性の面でアクセス修飾子を"private"へ変更する
     private ExampleJson(File file) {
@@ -180,9 +190,9 @@ public class ExampleJson extends SingleJson<Example> {
         return new Example();
     }
 
-    // キャッシュを生成します(存在する場合は、キャッシュから取得する)
-    public static ExampleJson get(File file) {
-        return newJson(file, CACHE_JSON);
+    // インスタンスを生成します(キャッシュが存在する場合は、そこから取得します)
+    public static ExampleJson newJson(File file) {
+        return newJson(ExampleJson.class, file);
     }
 }
 ```
@@ -251,7 +261,8 @@ public class ExampleJson extends TwoJson<Integer, Integer, Example> {
 
     /**
      * インスタンスを生成します。
-     * @param ... 引数
+     * @param x 引数X
+     * @param y 引数Y
      * @return Example - インスタンス
      */
     @Override
@@ -290,11 +301,11 @@ public class Example extends TwoElement<Integer, Integer> {
     }
 
     // 任意のメソッド
-    public void setOption(int value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
-    public int getOption() {
+    public int getValue() {
         return value;
     }
 }
@@ -310,9 +321,9 @@ File jsonFile = new File("files/example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // 要素に、任意の値を設定する。
-json.load(1, 2).setOption(100); // x:1,y:2を指定 値を100に設定
-json.load(1, 2).setOption(50);  // x:1,y:2を指定 値を50に設定
-json.load(0, 1).setOption(100); // x:0,y:1を指定 値を100に設定
+json.load(1, 2).setValue(100); // x:1,y:2を指定 値を100に設定
+json.load(1, 2).setValue(50);  // x:1,y:2を指定 値を50に設定
+json.load(0, 1).setValue(100); // x:0,y:1を指定 値を100に設定
 
 // Jsonの保存を行う。
 json.saveJson();

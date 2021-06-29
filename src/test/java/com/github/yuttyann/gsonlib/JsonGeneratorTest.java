@@ -15,7 +15,6 @@
  */
 package com.github.yuttyann.gsonlib;
 
-import com.github.yuttyann.gsonlib.JsonGenerator.ExampleJson;
 import com.github.yuttyann.gsonlib.JsonGenerator.Status;
 
 import org.junit.Test;
@@ -26,18 +25,18 @@ import org.junit.Test;
  */
 public class JsonGeneratorTest {
 
-    private static ExampleJson json;
+    private static final JsonGenerator JSON = new JsonGenerator();
 
     @Test
     public void test1() {
         System.out.println("JSONを生成します。");
-        json = new JsonGenerator().create();
+        JSON.create();
     }
 
     @Test
     public void test2() {
         System.out.println("一覧から特定の要素を取り出す。");
-        json.getElementMap().values().forEach(e -> {
+        JSON.getJson().getElementMap().values().forEach(e -> {
             if (e.getStatus() == Status.ON && e.getAmount() >= 10 && e.getAmount() <= 100) {
                 System.out.print(e.getPassword());
                 System.out.print(" == ");
