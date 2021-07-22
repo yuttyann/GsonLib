@@ -247,7 +247,7 @@ public class Example extends SingleElement {
 
 ```java
 // Json
-@JsonTag(path = "example")
+@JsonTag(...)
 public class ExampleJson extends TwoJson<Integer, Integer, Example> {
 
     /**
