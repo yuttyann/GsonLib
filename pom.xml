@@ -49,7 +49,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.0</version>
           <configuration>
             <author>true</author>
             <source>${java.version}</source>
@@ -60,6 +60,7 @@
             <docencoding>${project.build.sourceEncoding}</docencoding>
             <destDir>javadoc-latest</destDir>
             <bottom><![CDATA[<b>Yuttyann, 2021</b>]]></bottom>
+            <additionalJOption>-Xdoclint:none</additionalJOption>
             <tags>
               <tag>
                 <name>apiNote</name>

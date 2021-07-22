@@ -32,13 +32,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface JsonTag {
 
     /**
-     * 整形を許可する要素数の上限を取得します。
-     * @return {@link int} - 上限値
-     */
-    @NotNull
-    int limit() default 100000;
-
-    /**
      * インデントを取得します。
      * <p>
      * 整形を行う際に利用されます。
@@ -46,6 +39,13 @@ public @interface JsonTag {
      */
     @NotNull
     String indent() default "  ";
+
+    /**
+     * 整形を許可する要素数の上限を取得します。
+     * @return {@link int} - 上限値
+     */
+    @NotNull
+    int limit() default 100000;
 
     /**
      * ファイルを保存した時にキャッシュを削除するのかどうか。

@@ -72,7 +72,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
 
     public static final GsonHolder GSON_HOLDER = new GsonHolder(new GsonBuilder());
 
-    private static final IntObjectMap<BaseJson<?>> JSON_CACHE = new IntObjectHashMap<>();
+    private static final Map<Class<? extends BaseJson<?>>, IntObjectMap<BaseJson<?>>> JSON_CACHE = new HashMap<>();
 
     private final File file;
     private final String name;
@@ -131,17 +131,21 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      */
     @NotNull
     public static <T extends BaseJson<?>> T newJson(@NotNull Class<T> json, @NotNull File file) {
-        var hash = hash(json, file.hashCode());
-        var baseJson = JSON_CACHE.get(hash);
+        int hash = file.hashCode();
+        var cacheMap = JSON_CACHE.get(json);
+        var baseJson = cacheMap == null ? null : cacheMap.get(hash);
         if (baseJson == null) {
             var cacheJson = CacheJson.CACHE_MAP.get(json);
+            if (cacheJson == null) {
+                throw new NullPointerException("The class is not registered");
+            }
             baseJson = cacheJson.newInstance(file);
             if (baseJson.jsonTag.cachefileexists() && !baseJson.exists()) {
                 return (T) baseJson;
             }
             baseJson.keepCache();
             baseJson.setCacheId(hash);
-            JSON_CACHE.put(hash, baseJson);
+            JSON_CACHE.computeIfAbsent(json, v -> new IntObjectHashMap<>()).put(hash, baseJson);
         }
         return (T) baseJson;
     }
@@ -159,9 +163,14 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      */
     @NotNull
     public static <T extends BaseJson<?>> T getCache(@NotNull Class<T> json, @NotNull File file) {
-        var baseJson = JSON_CACHE.get(hash(json, file.hashCode()));
+        var cacheMap = JSON_CACHE.get(json);
+        var baseJson = cacheMap == null ? null : cacheMap.get(file.hashCode());
         if (baseJson == null) {
-            baseJson = CacheJson.CACHE_MAP.get(json).newInstance(file);
+            var cacheJson = CacheJson.CACHE_MAP.get(json);
+            if (cacheJson == null) {
+                throw new NullPointerException("The class is not registered");
+            }
+            baseJson = cacheJson.newInstance(file);
         }
         return (T) baseJson;
     }
@@ -170,8 +179,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * キャッシュされた全ての要素を削除します。
      */
     public static void clear() {
-        JSON_CACHE.entries().forEach(e -> e.value().clearCache());
-        JSON_CACHE.clear();
+        JSON_CACHE.keySet().forEach(BaseJson::clear);
     }
 
     /**
@@ -179,13 +187,10 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * @param json - Jsonのクラス 
      */
     public static final void clear(@NotNull Class<? extends BaseJson<?>> json) {
-        var iterator = JSON_CACHE.entries().iterator();
-        while (iterator.hasNext()) {
-            var value = iterator.next().value();
-            if (value.getClass().equals(json)) {
-                value.clearCache();
-                iterator.remove();
-            }
+        var cacheMap = JSON_CACHE.get(json);
+        if (cacheMap != null) {
+            cacheMap.entries().forEach(i -> i.value().clearCache());
+            cacheMap.clear();
         }
     }
 
@@ -251,9 +256,7 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
      * @param id - キャッシュID
      */
     private void setCacheId(final int id) {
-        if (this.id == 0) {
-            this.id = id;
-        }
+        this.id = id;
     }
 
     /**
@@ -331,8 +334,8 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
         }
         try {
             if (getStatus() == Status.KEEP_CACHE) {
+                Optional.ofNullable(JSON_CACHE.get(getClass())).ifPresent(i -> i.remove(getCacheId()));
                 clearCache();
-                JSON_CACHE.remove(getCacheId());
             }
         } finally {
             file.delete();
@@ -358,8 +361,8 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
             e.printStackTrace();
         } finally {
             if (jsonTag.temporary() && getStatus() == Status.KEEP_CACHE) {
+                Optional.ofNullable(JSON_CACHE.get(getClass())).ifPresent(i -> i.remove(getCacheId()));
                 clearCache();
-                JSON_CACHE.remove(getCacheId());
             }
         }
     }
@@ -441,23 +444,13 @@ public abstract class BaseJson<E extends BaseElement> extends SubElementMap<E> {
         this.elementMap = newMap;
     }
 
-    /**
-     * ハッシュコードを生成します。
-     * @param hashCode - ハッシュコード
-     * @param json - Jsonのクラス
-     * @return {@link int} - ハッシュコード
-     */
-    private static int hash(@NotNull Class<?> json, @NotNull int hashCode) {
-        int hash = 1;
-        int prime = 31;
-        hash = prime * hash + hashCode;
-        hash = prime * hash + json.hashCode();
-        return hash;
-    }
-
     @Override
     public int hashCode() {
-        return hash(getClass(), name.hashCode());
+        int hash = 1;
+        int prime = 31;
+        hash = prime * hash + name.hashCode();
+        hash = prime * hash + getClass().hashCode();
+        return hash;
     }
 
     @Override

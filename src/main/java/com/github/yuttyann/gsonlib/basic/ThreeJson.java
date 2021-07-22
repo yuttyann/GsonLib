@@ -100,6 +100,16 @@ public abstract class ThreeJson<A, B, C, E extends ThreeJson.ThreeElement<A, B, 
 
     /**
      * コンストラクタ
+     * @apiNote
+     * <pre>
+     * 実装例です。
+     * // キャッシュ(CacheJson)を利用する場合は、
+     * // コンストラクタの引数を『 File file 』のみにしてください。
+     * // また、上記の方法で実装する場合は、修飾子を『 private 』にすることを推奨します。
+     * private xxxJson(&#064;NotNull String name) {
+     *     super(name);
+     * }
+     * </pre>
      * @param file - ファイル
      */
     protected ThreeJson(@NotNull File file) {
