@@ -103,8 +103,8 @@ public class ScriptConnection extends ItemAction {
             String fullCoords = blockCoords.getFullCoords();
             JsonBuilder builder = new JsonBuilder();
             builder.add(new JsonElement("ScriptKeys: ", ChatColor.GOLD, ChatFormat.BOLD));
-            for (ScriptKey scriptKey : ScriptKey.values()) {
-                if (BlockScriptJson.contains(scriptKey, blockCoords)) {
+            for (ScriptKey scriptKey : ScriptKey.iterable()) {
+                if (BlockScriptJson.newJson(scriptKey).has(blockCoords)) {
                     String chat = scriptKey.toString() + "|" + fullCoords + "/" + PlayerListener.KEY_TOOL;
                     JsonElement element = new JsonElement(scriptKey.toString(), ChatColor.GREEN, ChatFormat.BOLD);
                     element.setClickEvent(ClickEventType.RUN_COMMAND, chat);
@@ -130,7 +130,7 @@ public class ScriptConnection extends ItemAction {
             return;
         }
         if (runItem.isSneaking()) {
-            EntityScriptJson entityScriptJson = EntityScriptJson.get(entity.get().getUniqueId());
+            EntityScriptJson entityScriptJson = EntityScriptJson.newJson(entity.get().getUniqueId());
             if (!entityScriptJson.exists()) {
                 SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
                 return;
@@ -143,13 +143,13 @@ public class ScriptConnection extends ItemAction {
                 SBConfig.ERROR_SCRIPT_FILE_CHECK.send(sbPlayer);
                 return;
             }
-            EntityScriptJson entityScriptJson = EntityScriptJson.get(entity.get().getUniqueId());
+            EntityScriptJson entityScriptJson = EntityScriptJson.newJson(entity.get().getUniqueId());
             EntityScript entityScript = entityScriptJson.load();
             for (String script : objectMap.get(PlayerListener.KEY_SCRIPT, new String[0])) {
                 String[] array = script.split(Pattern.quote("|"));
                 ScriptKey scriptKey = ScriptKey.valueOf(array[0]);
                 BlockCoords blockCoords = BlockCoords.fromString(array[1]);
-                if (BlockScriptJson.contains(scriptKey, blockCoords)) {
+                if (BlockScriptJson.newJson(scriptKey).has(blockCoords)) {
                     entityScript.getScripts(toolMode).add(script);
                 }
             }
@@ -168,7 +168,7 @@ public class ScriptConnection extends ItemAction {
         if (!entity.isPresent()) {
             return;
         }
-        EntityScriptJson entityScriptJson = EntityScriptJson.get(entity.get().getUniqueId());
+        EntityScriptJson entityScriptJson = EntityScriptJson.newJson(entity.get().getUniqueId());
         EntityScript entityScript = entityScriptJson.load();
         if (runItem.isSneaking()) {
             if (!entityScriptJson.exists()) {
@@ -249,10 +249,10 @@ public class ScriptConnection extends ItemAction {
 
     @NotNull
     private String getTexts(@NotNull ScriptKey scriptKey, @NotNull BlockCoords blockCoords) {
-        if (!BlockScriptJson.contains(scriptKey, blockCoords)) {
+        if (!BlockScriptJson.newJson(scriptKey).has(blockCoords)) {
             return "null";
         }
-        BlockScript blockScript = BlockScriptJson.get(scriptKey).load(blockCoords);
+        BlockScript blockScript = BlockScriptJson.newJson(scriptKey).load(blockCoords);
         String selector = blockScript.getSelector();
         StringBuilder builder = new StringBuilder();
         StringJoiner joiner = new StringJoiner("\n§6- §b");

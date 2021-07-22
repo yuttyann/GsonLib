@@ -73,7 +73,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
         } else if (chat.lastIndexOf("/" + KEY_SETTINGS) != -1 && SEPermission.TOOL_SCRIPT_CONNECTION.has(player)) {
             String[] array = chat.split("/")[0].split("=");
-            EntityScriptJson entityScriptJson = EntityScriptJson.get(UUID.fromString(array[1]));
+            EntityScriptJson entityScriptJson = EntityScriptJson.newJson(UUID.fromString(array[1]));
             if (entityScriptJson.exists()) {
                 setting(player, array, entityScriptJson.load());
                 entityScriptJson.saveJson();

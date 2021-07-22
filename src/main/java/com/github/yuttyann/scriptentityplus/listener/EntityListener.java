@@ -78,7 +78,7 @@ public class EntityListener implements Listener {
     }
 
     private void damageEvent(@NotNull Cancellable event, @NotNull Entity damager, @NotNull Entity entity, final double damage) {
-        EntityScriptJson entityScriptJson = EntityScriptJson.get(entity.getUniqueId());
+        EntityScriptJson entityScriptJson = EntityScriptJson.newJson(entity.getUniqueId());
         if (!entityScriptJson.exists()) {
             return;
         }
@@ -141,7 +141,7 @@ public class EntityListener implements Listener {
         if (type == EntityType.PLAYER) {
             return;
         }
-        EntityScriptJson scriptJson = EntityScriptJson.get(entity.getUniqueId());
+        EntityScriptJson scriptJson = EntityScriptJson.newJson(entity.getUniqueId());
         if (scriptJson.exists()) {
             scriptJson.deleteFile();
         }
@@ -179,7 +179,7 @@ public class EntityListener implements Listener {
                 }
                 event.setCancelled(true);
             } else {
-                EntityScript entityScript = EntityScriptJson.get(entity.getUniqueId()).load();
+                EntityScript entityScript = EntityScriptJson.newJson(entity.getUniqueId()).load();
                 if (entityScript.getScripts(ToolMode.NORMAL_SCRIPT).size() > 0) {
                     if (!entityScript.isProjectile()) {
                         for (String script : entityScript.getScripts(ToolMode.NORMAL_SCRIPT)) {
@@ -215,7 +215,7 @@ public class EntityListener implements Listener {
 
     private void read(@NotNull Player player, @NotNull Entity entity, @NotNull String[] array, @NotNull Action action) {
         BlockCoords blockCoords = BlockCoords.fromString(array[1]);
-        if (!BlockScriptJson.contains(ScriptKey.valueOf(array[0]), blockCoords)) {
+        if (!BlockScriptJson.newJson(ScriptKey.valueOf(array[0])).has(blockCoords)) {
             return;
         }
         EntityScriptRead scriptRead = new EntityScriptRead(player, blockCoords, ScriptKey.valueOf(array[0]));

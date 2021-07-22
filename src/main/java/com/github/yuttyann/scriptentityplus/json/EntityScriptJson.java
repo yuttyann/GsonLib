@@ -15,7 +15,6 @@
  */
 package com.github.yuttyann.scriptentityplus.json;
 
-import com.github.yuttyann.scriptblockplus.file.json.CacheJson;
 import com.github.yuttyann.scriptblockplus.file.json.annotation.JsonTag;
 import com.github.yuttyann.scriptblockplus.file.json.basic.SingleJson;
 
@@ -25,8 +24,6 @@ import java.util.UUID;
 
 @JsonTag(path = "json/entityscript")
 public class EntityScriptJson extends SingleJson<EntityScript> {
-
-    public static final CacheJson CACHE_JSON = new CacheJson(EntityScriptJson.class, EntityScriptJson::new);
 
     private EntityScriptJson(@NotNull String name) {
         super(name);
@@ -39,7 +36,7 @@ public class EntityScriptJson extends SingleJson<EntityScript> {
     }
 
     @NotNull
-    public static EntityScriptJson get(@NotNull UUID uuid) {
-        return newJson(uuid.toString(), CACHE_JSON);
+    public static EntityScriptJson newJson(@NotNull UUID uuid) {
+        return newJson(EntityScriptJson.class, uuid.toString());
     }
 }

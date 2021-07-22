@@ -42,7 +42,7 @@ import java.util.Objects;
 
 public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.1.2";
+    public static final String SBP_VERSION = "2.1.3";
 
     @Override
     public void onEnable() {
@@ -56,7 +56,7 @@ public class ScriptEntity extends JavaPlugin {
                 SEFiles.reload();
 
                 // キャッシュの生成
-                EntityScriptJson.CACHE_JSON.setLoader();
+                CacheJson.register(EntityScriptJson.class);
                 CacheJson.loading(EntityScriptJson.class);
 
                 // リスナーの登録
