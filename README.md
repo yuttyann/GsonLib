@@ -55,7 +55,7 @@
 **要素を取得する**
 ```java
 // Jsonの取得
-File jsonFile = new File(...);
+File jsonFile = new File("example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // 要素の取得(見つからなかった場合は、インスタンスを生成して返す)
@@ -64,7 +64,7 @@ Example element = json.load();
 **要素が存在するのかどうか**
 ```java
 // Jsonの取得
-File jsonFile = new File(...);
+File jsonFile = new File("example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // 要素が存在するのか判定
@@ -73,7 +73,7 @@ json.has();
 **要素を削除する**
 ```java
 // Jsonの取得
-File jsonFile = new File(...);
+File jsonFile = new File("example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // 要素の削除
@@ -82,7 +82,7 @@ json.remove();
 **要素を保存する**
 ```java
 // Jsonの取得
-File jsonFile = new File(...);
+File jsonFile = new File("example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // 要素の保存
@@ -91,7 +91,7 @@ json.saveJson();
 **ファイルを削除する**
 ```java
 // Jsonの取得
-File jsonFile = new File(...);
+File jsonFile = new File("example.json");
 ExampleJson json = new ExampleJson(jsonFile);
 
 // ファイルの削除(キャッシュも削除する)
@@ -247,7 +247,7 @@ public class Example extends SingleElement {
 
 ```java
 // Json
-@JsonTag
+@JsonTag(path = "example")
 public class ExampleJson extends TwoJson<Integer, Integer, Example> {
 
     /**
@@ -313,11 +313,8 @@ public class Example extends TwoElement<Integer, Integer> {
 **使用例**  
 上記に記述したクラスを実際に使ってみましょう。
 ```java
-// filesフォルダの内部に生成する。
-File jsonFile = new File("files/example.json");
-
 // ExampleJson を生成する。
-ExampleJson json = new ExampleJson(jsonFile);
+ExampleJson json = new ExampleJson(new File("A.json"));
 
 // 要素に、任意の値を設定する。
 json.load(1, 2).setValue(100); // x:1,y:2を指定 値を100に設定
