@@ -16,14 +16,9 @@
 package com.github.yuttyann.scriptentityplus.script;
 
 import com.github.yuttyann.scriptblockplus.BlockCoords;
-import com.github.yuttyann.scriptblockplus.file.config.SBConfig;
-import com.github.yuttyann.scriptblockplus.hook.plugin.Placeholder;
-import com.github.yuttyann.scriptblockplus.manager.EndProcessManager;
-import com.github.yuttyann.scriptblockplus.manager.OptionManager;
 import com.github.yuttyann.scriptblockplus.script.ScriptRead;
 import com.github.yuttyann.scriptblockplus.script.ScriptKey;
 import com.github.yuttyann.scriptblockplus.script.option.BaseOption;
-import com.github.yuttyann.scriptblockplus.script.option.Option;
 import com.github.yuttyann.scriptblockplus.utils.unmodifiable.UnmodifiableLocation;
 import com.github.yuttyann.scriptentityplus.file.SEFiles;
 
@@ -46,7 +41,6 @@ public final class EntityScriptRead extends ScriptRead {
         SEFiles.reloadFilters();
     }
 
-    private Option option;
     private Entity entity;
     private Location entityLocation;
 
@@ -72,21 +66,6 @@ public final class EntityScriptRead extends ScriptRead {
     @Override
     @NotNull
     public final Location getLocation() {
-        return FILTERS.contains(option.getClass()) ? entityLocation :super.getLocation();
-    }
-
-    @Override
-    protected boolean perform(final int index) {
-        for (this.index = index; this.index < scripts.size(); this.index++) {
-            String script = scripts.get(this.index);
-            this.option = OptionManager.newInstance(script);
-            this.value = Placeholder.INSTANCE.replace(getPlayer(), option.getValue(script));
-            if (!option.callOption(this) && isFailedIgnore(option)) {
-                return false;
-            }
-        }
-        EndProcessManager.forEach(e -> e.success(this));
-        SBConfig.CONSOLE_SUCCESS_SCRIPT_EXECUTE.replace(scriptKey, blockCoords).console();
-        return true;
+        return FILTERS.contains(option.getClass()) ? entityLocation : super.getLocation();
     }
 }

@@ -42,7 +42,7 @@ import java.util.Objects;
 
 public class ScriptEntity extends JavaPlugin {
 
-    public static final String SBP_VERSION = "2.1.3";
+    public static final String SBP_VERSION = "2.1.4";
 
     @Override
     public void onEnable() {
